@@ -5,13 +5,13 @@ using web_store_server.Domain.Entities;
 
 namespace web_store_server.Persistence.Database
 {
-    public partial class web_storeContext : DbContext
+    public partial class StoreContext : DbContext
     {
-        public web_storeContext()
+        public StoreContext()
         {
         }
 
-        public web_storeContext(DbContextOptions<web_storeContext> options)
+        public StoreContext(DbContextOptions<StoreContext> options)
             : base(options)
         {
         }
@@ -40,14 +40,7 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=web_store;Persist Security Info=True;User ID=sa;Password=admin1");
-            }
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
