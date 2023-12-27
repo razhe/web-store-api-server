@@ -8,10 +8,10 @@ namespace web_store_server.Middlewares
     public class RequestExceptionMiddleware
         : IMiddleware
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<RequestExceptionMiddleware> _logger;
         private readonly ProblemDetailsFactory _factory;
 
-        public RequestExceptionMiddleware(ILogger logger, ProblemDetailsFactory factory)
+        public RequestExceptionMiddleware(ILogger<RequestExceptionMiddleware> logger, ProblemDetailsFactory factory)
         {
             _logger = logger;
             _factory = factory;
@@ -25,7 +25,7 @@ namespace web_store_server.Middlewares
             }
             catch (Exception ex)
             {
-                if (ex is RequestException)
+                if (ex is not RequestException)
                     throw;
 
                 var exception = (RequestException)ex;

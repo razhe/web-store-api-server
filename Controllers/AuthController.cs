@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using web_store_server.Features;
 
 namespace web_store_server.Controllers
 {
@@ -12,6 +13,15 @@ namespace web_store_server.Controllers
         public AuthController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthorizationResponse>> GetLogin(
+            AuthorizationRequest request,
+            CancellationToken token)
+        {
+            var result = await _sender.Send(new AuthorizationCommand(request));
+            return Ok(result);
         }
     }
 }

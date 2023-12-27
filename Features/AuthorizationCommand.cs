@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
+using web_store_server.Common.Resources;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features
@@ -39,12 +40,11 @@ namespace web_store_server.Features
             {
                 throw new RequestException(
                     code: StatusCodes.Status400BadRequest,
-                    title: "No existe ningun usuario ligado a ese correo");
+                    title: "No existe ningun usuario ligado a ese correo",
+                    errors: new List<Error> { new Error(propertyName: "password", errorMessage: "no existe ningun usuario con ese correo, verifique la información") });
             }
 
-            bool isPasswordCorrect = user.VerifyPassoword(request.AuthorizationRequest.Password);
-
-            if (!isPasswordCorrect)
+            if (user.VerifyPassoword(request.AuthorizationRequest.Password) == false)
             {
                 throw new RequestException(
                     code: StatusCodes.Status400BadRequest,
