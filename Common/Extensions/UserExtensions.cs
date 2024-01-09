@@ -1,4 +1,4 @@
-﻿using web_store_server.Domain.Entities;
+﻿using web_store_server.Domain.Models.Entities;
 
 namespace web_store_server.Common.Extensions
 {

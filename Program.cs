@@ -1,3 +1,4 @@
+using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -20,12 +21,14 @@ builder.Services.AddSwaggerGen();
  */
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 builder.Services.AddScoped<RequestExceptionMiddleware>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 /*
  * Database
  */
 builder.Services.AddDbContext<StoreContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .UseJsonFunctions());
 
 /*
  * JWT
