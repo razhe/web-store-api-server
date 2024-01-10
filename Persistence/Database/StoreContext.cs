@@ -53,14 +53,18 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.ClientId)
+                .HasColumnName("client_id");
+
+                entity.Property(e => e.CreatedAt)
+                .HasColumnName("created_at");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("name");
 
-                entity.Property(e => e.SecretKey)
+                entity.Property(e => e.ClientSecret)
                     .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("secret_key");
