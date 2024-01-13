@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using web_store_server.Features.Account;
+using web_store_server.Dtos.Accounts;
 using web_store_server.Features.Account.Commands;
 
 namespace web_store_server.Controllers

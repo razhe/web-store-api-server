@@ -1,7 +1,8 @@
-﻿namespace web_store_mvc.Dtos
+﻿namespace web_store_server.Dtos.Products
 {
-    public class CreateProductDto
+    public class UpdateProductDto
     {
+        public Guid Id { get; set; }
         public int SubcategoryId { get; set; }
         public int BrandId { get; set; }
         public string Name { get; set; } = null!;

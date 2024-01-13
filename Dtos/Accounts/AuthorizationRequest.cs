@@ -1,6 +1,6 @@
-﻿using web_store_server.Common.Enumerations;
+﻿using web_store_server.Common.Enums;
 
-namespace web_store_server.Features.Account
+namespace web_store_server.Dtos.Accounts
 {
     public class AuthorizationRequest
     {

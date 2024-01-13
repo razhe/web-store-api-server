@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using web_store_mvc.Dtos;
 using web_store_server.Domain.Models.Entities;
+using web_store_server.Dtos.Products;
 
-namespace web_store_mvc.Profiles
+namespace web_store_server.Profiles
 {
     public class ProductProfile :
         Profile

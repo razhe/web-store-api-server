@@ -1,4 +1,4 @@
-﻿using web_store_server.Common.Resources;
+﻿using web_store_server.Shared.Resources;
 
 namespace web_store_server.Common.Exceptions
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
 using web_store_server.Common.Exceptions;
 
-namespace web_store_server.Middlewares
+namespace web_store_server.Shared.Middlewares
 {
     public class RequestExceptionMiddleware
         : IMiddleware

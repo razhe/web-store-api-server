@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using web_store_mvc.Dtos;
 using web_store_mvc.Features.Products.Commands;
 using web_store_mvc.Features.Products.Queries;
+using web_store_server.Dtos.Products;
 
 namespace web_store_server.Controllers
 {

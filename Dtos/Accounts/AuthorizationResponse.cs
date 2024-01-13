@@ -1,4 +1,4 @@
-﻿namespace web_store_server.Features.Account
+﻿namespace web_store_server.Dtos.Accounts
 {
     public class AuthorizationResponse
     {

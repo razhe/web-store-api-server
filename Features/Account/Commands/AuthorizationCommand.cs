@@ -6,8 +6,9 @@ using System.Security.Claims;
 using System.Text;
 using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
-using web_store_server.Common.Resources;
+using web_store_server.Dtos.Accounts;
 using web_store_server.Persistence.Database;
+using web_store_server.Shared.Resources;
 
 namespace web_store_server.Features.Account.Commands
 {

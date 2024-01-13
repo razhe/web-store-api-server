@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using web_store_server.Middlewares;
 using web_store_server.Persistence.Database;
+using web_store_server.Shared.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 

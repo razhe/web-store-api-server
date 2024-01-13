@@ -1,4 +1,4 @@
-﻿namespace web_store_server.Common.Enumerations
+﻿namespace web_store_server.Common.Enums
 {
     public class UserEnums
     {

@@ -1,4 +1,4 @@
-﻿namespace web_store_mvc.Dtos
+﻿namespace web_store_server.Dtos.Subcategories
 {
     public class GetSubcategoryDto
     {

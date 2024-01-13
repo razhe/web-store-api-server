@@ -7,7 +7,7 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Domain\/Models\/Entities",
+   "OutputPath": "Domain\/Entities",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "web_store_server",
    "Schemas": null,
@@ -15,14 +15,6 @@
    "SelectedToBeGenerated": 0,
    "T4TemplatePath": null,
    "Tables": [
-      {
-         "Name": "[dbo].[auth_clients]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[auth_requests]",
-         "ObjectType": 0
-      },
       {
          "Name": "[dbo].[coupons]",
          "ObjectType": 0
@@ -41,6 +33,10 @@
       },
       {
          "Name": "[dbo].[delivery_type]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[oauth_providers]",
          "ObjectType": 0
       },
       {
@@ -100,7 +96,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[user_roles]",
+         "Name": "[dbo].[user_oauth_request]",
          "ObjectType": 0
       },
       {
