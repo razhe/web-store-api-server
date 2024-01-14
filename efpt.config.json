@@ -1,18 +1,18 @@
 ﻿{
    "CodeGenerationMode": 2,
-   "ContextClassName": "web_storeContext",
+   "ContextClassName": "StoreContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Domain\/Entities",
+   "OutputPath": "Persistence\/Database",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "web_store_server",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 2,
-   "SelectedToBeGenerated": 0,
+   "SelectedToBeGenerated": 1,
    "T4TemplatePath": null,
    "Tables": [
       {

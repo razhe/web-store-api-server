@@ -2,7 +2,7 @@
 #nullable disable
 using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.EntityFrameworkCore;
-using web_store_server.Domain.Models.Entities;
+using web_store_server.Domain.Entities;
 
 namespace web_store_server.Persistence.Database
 {
@@ -17,13 +17,12 @@ namespace web_store_server.Persistence.Database
         {
         }
 
-        public virtual DbSet<AuthClient> AuthClients { get; set; }
-        public virtual DbSet<AuthRequest> AuthRequests { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryType> DeliveryTypes { get; set; }
+        public virtual DbSet<OauthProvider> OauthProviders { get; set; }
         public virtual DbSet<Offer> Offers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<PasswordReset> PasswordResets { get; set; }
@@ -39,76 +38,12 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<ProductSubcategory> ProductSubcategories { get; set; }
         public virtual DbSet<Sale> Sales { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<UserOauthRequest> UserOauthRequests { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AuthClient>(entity =>
-            {
-                entity.ToTable("auth_clients");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
-
-                entity.Property(e => e.ClientId)
-                .HasColumnName("client_id");
-
-                entity.Property(e => e.CreatedAt)
-                .HasColumnName("created_at");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("name");
-
-                entity.Property(e => e.ClientSecret)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("secret_key");
-
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("url");
-            });
-
-            modelBuilder.Entity<AuthRequest>(entity =>
-            {
-                entity.ToTable("auth_requests");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.AccessToken)
-                    .IsRequired()
-                    .HasColumnName("access_token");
-
-                entity.Property(e => e.ClientId).HasColumnName("client_id");
-
-                entity.Property(e => e.CreatedAt).HasColumnName("created_At");
-
-                entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
-
-                entity.Property(e => e.RefreshToken)
-                    .IsRequired()
-                    .HasColumnName("refresh_token");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Client)
-                    .WithMany(p => p.AuthRequests)
-                    .HasForeignKey(d => d.ClientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_auth_requests_auth_clients");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AuthRequests)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_auth_requests_users");
-            });
-
             modelBuilder.Entity<Coupon>(entity =>
             {
                 entity.ToTable("coupons");
@@ -149,12 +84,10 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("first_name");
 
                 entity.Property(e => e.LastName)
-                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("last_name");
 
                 entity.Property(e => e.Phone)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("phone");
 
@@ -260,6 +193,32 @@ namespace web_store_server.Persistence.Database
                     .IsRequired()
                     .HasMaxLength(150)
                     .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<OauthProvider>(entity =>
+            {
+                entity.ToTable("oauth_providers");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ClientId)
+                    .IsRequired()
+                    .HasColumnName("client_id");
+
+                entity.Property(e => e.ClientName)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnName("client_name");
+
+                entity.Property(e => e.ClientSecret).HasColumnName("client_secret");
+
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+
+                entity.Property(e => e.RedirectUri)
+                    .HasMaxLength(500)
+                    .HasColumnName("redirect_uri");
             });
 
             modelBuilder.Entity<Offer>(entity =>
@@ -686,6 +645,8 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
+                entity.Property(e => e.AccountOrigin).HasColumnName("account_origin");
+
                 entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
@@ -694,33 +655,50 @@ namespace web_store_server.Persistence.Database
                     .IsRequired()
                     .HasColumnName("email");
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasColumnName("password");
+                entity.Property(e => e.ExternalAccountCode).HasColumnName("external_account_code");
 
-                entity.Property(e => e.RoleId).HasColumnName("role_id");
+                entity.Property(e => e.Password).HasColumnName("password");
+
+                entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_users_user_roles");
             });
 
-            modelBuilder.Entity<UserRole>(entity =>
+            modelBuilder.Entity<UserOauthRequest>(entity =>
             {
-                entity.ToTable("user_roles");
+                entity.ToTable("user_oauth_request");
 
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.AccessToken)
                     .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnName("name");
+                    .HasColumnName("access_token");
+
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+
+                entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
+
+                entity.Property(e => e.ProviderId).HasColumnName("provider_id");
+
+                entity.Property(e => e.RefreshToken)
+                    .IsRequired()
+                    .HasColumnName("refresh_token");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Provider)
+                    .WithMany(p => p.UserOauthRequests)
+                    .HasForeignKey(d => d.ProviderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_request_oauth_providers");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserOauthRequests)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_request_users");
             });
 
             OnModelCreatingPartial(modelBuilder);

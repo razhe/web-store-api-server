@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using web_store_server.Domain.Models.Entities;
+using web_store_server.Domain.Entities;
 using web_store_server.Dtos.Products;
 
 namespace web_store_server.Profiles

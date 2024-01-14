@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using web_store_server.Domain.Models.Entities;
+using web_store_server.Domain.Entities;
 using web_store_server.Dtos.Products;
 using web_store_server.Persistence.Database;
 

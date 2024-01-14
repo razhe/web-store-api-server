@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using web_store_server.Domain.Models.Entities;
+using web_store_server.Domain.Entities;
 using web_store_server.Dtos.Products;
 using web_store_server.Persistence.Database;
 
