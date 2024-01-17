@@ -30,12 +30,12 @@ namespace web_store_server.Features.Account.Commands
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = jwtHandler.ReadJwtToken(request.RefreshTokenRequest.ExpiredToken);
 
-            //if (jwtSecurityToken.ValidTo > DateTimeOffset.Now)
-            //{
-            //    throw new RequestException(
-            //        code: StatusCodes.Status400BadRequest,
-            //        title: "el JWT aún no ha expirado");
-            //}
+            if (jwtSecurityToken.ValidTo > DateTimeOffset.Now)
+            {
+                throw new RequestException(
+                    code: StatusCodes.Status400BadRequest,
+                    title: "el Token aún no ha expirado");
+            }
 
             var jwtUserId = jwtSecurityToken.Claims.First(claim => claim.Type == "UserIdentifier").Value;
             var jwtProviderId = jwtSecurityToken.Claims.First(claim => claim.Type == "ProviderIdentifier").Value;
