@@ -674,7 +674,7 @@ namespace web_store_server.Persistence.Database
                     .IsRequired()
                     .HasColumnName("access_token");
 
-                entity.Property(e => e.IsActive).HasComputedColumnSql("(case when [expire_on]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+                entity.Property(e => e.IsActive).HasComputedColumnSql("(case when [expire_on]<sysdatetimeoffset() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
 
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
