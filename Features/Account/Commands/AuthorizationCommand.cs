@@ -70,7 +70,7 @@ namespace web_store_server.Features.Account.Commands
                 new SymmetricSecurityKey(keyBytes),
                 SecurityAlgorithms.HmacSha256Signature);
 
-            var tokenDuration = DateTimeOffset.Now.DateTime.AddMinutes(60);
+            var tokenDuration = DateTime.UtcNow.AddMinutes(60);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_store_mvc.Features.Products.Commands;
 using web_store_mvc.Features.Products.Queries;
@@ -7,6 +8,7 @@ using web_store_server.Dtos.Products;
 namespace web_store_server.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -63,10 +65,10 @@ namespace web_store_server.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteProduct(
-            Guid productId,
+            Guid id,
             CancellationToken token)
         {
-            await _sender.Send(new DeleteProductCommand(productId), token);
+            await _sender.Send(new DeleteProductCommand(id), token);
             return StatusCode(204);
         }
     }
