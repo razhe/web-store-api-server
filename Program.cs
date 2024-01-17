@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using web_store_server.Domain.Contracts;
+using web_store_server.Domain.Services;
 using web_store_server.Persistence.Database;
 using web_store_server.Shared.Middlewares;
 
@@ -50,6 +52,7 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 builder.Services.AddScoped<RequestExceptionMiddleware>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 /*
  * Database

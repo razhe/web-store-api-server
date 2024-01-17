@@ -25,5 +25,15 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new AuthorizationCommand(request), token);
             return Ok(result);
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("refreshToken")]
+        public async Task<ActionResult> GetRefreshToken(
+            RefreshTokenRequest request,
+            CancellationToken token)
+        {
+            var result = await _sender.Send(new RefreshTokenCommand(request), token);
+            return Ok(result);
+        }
     }
 }

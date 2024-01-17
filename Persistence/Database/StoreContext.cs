@@ -200,7 +200,6 @@ namespace web_store_server.Persistence.Database
                 entity.ToTable("oauth_providers");
 
                 entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
                     .HasColumnName("id");
 
                 entity.Property(e => e.ClientId)
@@ -669,12 +668,13 @@ namespace web_store_server.Persistence.Database
                 entity.ToTable("user_oauth_request");
 
                 entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
                     .HasColumnName("id");
 
                 entity.Property(e => e.AccessToken)
                     .IsRequired()
                     .HasColumnName("access_token");
+
+                entity.Property(e => e.IsActive).HasComputedColumnSql("(case when [expire_on]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
 
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 

@@ -1,11 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
+using web_store_server.Domain.Contracts;
 using web_store_server.Dtos.Accounts;
 using web_store_server.Persistence.Database;
 using web_store_server.Shared.Resources;
@@ -20,22 +17,40 @@ namespace web_store_server.Features.Account.Commands
     {
         private readonly StoreContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IAccountService _accountService;
 
         public AuthorizationCommandHandler(
             StoreContext context,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAccountService accountService)
         {
             _context = context;
             _configuration = configuration;
+            _accountService = accountService;
         }
 
         public async Task<AuthorizationResponse> Handle(
             AuthorizationCommand request,
-            CancellationToken cancellationToken)
+            CancellationToken token)
         {
             var user = await _context.Users
+                .AsNoTracking()
                 .Where(x => x.Email == request.AuthorizationRequest.Email)
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken: token);
+
+            var oAuthProvider = await _context.OauthProviders
+                .AsNoTracking()
+                .Where(x =>
+                    x.ClientId == request.AuthorizationRequest.ClientId &&
+                    x.ClientSecret == request.AuthorizationRequest.ClientSecret)
+                .FirstOrDefaultAsync(cancellationToken: token);
+
+            if (oAuthProvider is null)
+            {
+                throw new RequestException(
+                    code: StatusCodes.Status404NotFound,
+                    title: "cliente inválido");
+            }
 
             if (user is null)
             {
@@ -52,45 +67,7 @@ namespace web_store_server.Features.Account.Commands
                     title: "Contraseña inválida");
             }
 
-            return GenerateToken(user.Id);
-        }
-
-        public AuthorizationResponse GenerateToken(Guid userId)
-        {
-            var key = _configuration.GetValue<string>("JWTSettings:Key");
-            var issuer = _configuration.GetValue<string>("JWTSettings:Issuer");
-            var audience = _configuration.GetValue<string>("JWTSettings:Audience");
-
-            var keyBytes = Encoding.ASCII.GetBytes(key);
-
-            var claims = new ClaimsIdentity();
-            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId.ToString()));
-
-            var tokenCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(keyBytes),
-                SecurityAlgorithms.HmacSha256Signature);
-
-            var tokenDuration = DateTime.UtcNow.AddMinutes(60);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = issuer,
-                Audience = audience,
-                Subject = claims,
-                Expires = tokenDuration,
-                SigningCredentials = tokenCredentials
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
-
-            AuthorizationResponse tokenResponse = new()
-            {
-                Token = tokenHandler.WriteToken(tokenConfig),
-                ExpiresAt = tokenDuration
-            };
-
-            return tokenResponse;
+            return await _accountService.GetAccessTokenAsync(user, oAuthProvider, token);
         }
     }
 }

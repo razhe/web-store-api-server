@@ -7,12 +7,12 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "Persistence\/Database",
+   "OutputPath": "Domain\/Entities",
    "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "web_store_server",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 2,
-   "SelectedToBeGenerated": 1,
+   "SelectedToBeGenerated": 2,
    "T4TemplatePath": null,
    "Tables": [
       {

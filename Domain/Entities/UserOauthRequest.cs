@@ -12,6 +12,7 @@ namespace web_store_server.Domain.Entities
         public Guid UserId { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+        public bool? IsActive { get; set; }
         public DateTimeOffset ExpireOn { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
