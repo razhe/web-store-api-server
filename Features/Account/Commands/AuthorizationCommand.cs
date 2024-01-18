@@ -16,16 +16,13 @@ namespace web_store_server.Features.Account.Commands
         : IRequestHandler<AuthorizationCommand, AuthorizationResponse>
     {
         private readonly StoreContext _context;
-        private readonly IConfiguration _configuration;
         private readonly IAccountService _accountService;
 
         public AuthorizationCommandHandler(
             StoreContext context,
-            IConfiguration configuration,
             IAccountService accountService)
         {
             _context = context;
-            _configuration = configuration;
             _accountService = accountService;
         }
 
