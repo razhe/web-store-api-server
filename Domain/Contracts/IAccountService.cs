@@ -7,13 +7,13 @@ namespace web_store_server.Domain.Contracts
     {
         Task<AuthorizationResponse> GetAccessTokenAsync(
             User user,
-            OauthProvider provider,
+            OauthClient client,
             CancellationToken token);
 
         Task<AuthorizationResponse> GetRefreshTokenAsync(
             RefreshTokenRequest request,
             User user,
-            OauthProvider provider,
+            OauthClient client,
             CancellationToken token);
     }
 }

@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace web_store_server.Domain.Entities
 {
-    public partial class OauthProvider
+    public partial class OauthClient
     {
-        public OauthProvider()
+        public OauthClient()
         {
-            UserOauthRequests = new HashSet<UserOauthRequest>();
+            OauthUserClientRequests = new HashSet<OauthUserClientRequest>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,6 @@ namespace web_store_server.Domain.Entities
         public string RedirectUri { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
-        public virtual ICollection<UserOauthRequest> UserOauthRequests { get; set; }
+        public virtual ICollection<OauthUserClientRequest> OauthUserClientRequests { get; set; }
     }
 }

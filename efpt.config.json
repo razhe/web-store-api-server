@@ -12,7 +12,7 @@
    "ProjectRootNamespace": "web_store_server",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 2,
-   "SelectedToBeGenerated": 2,
+   "SelectedToBeGenerated": 0,
    "T4TemplatePath": null,
    "Tables": [
       {
@@ -36,7 +36,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[oauth_providers]",
+         "Name": "[dbo].[oauth_clients]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[oauth_user_client_requests]",
          "ObjectType": 0
       },
       {
@@ -93,10 +97,6 @@
       },
       {
          "Name": "[dbo].[sales]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[user_oauth_request]",
          "ObjectType": 0
       },
       {

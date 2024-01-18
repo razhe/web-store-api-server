@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace web_store_server.Domain.Entities
 {
-    public partial class UserOauthRequest
+    public partial class OauthUserClientRequest
     {
         public int Id { get; set; }
-        public int ProviderId { get; set; }
+        public int ClientId { get; set; }
         public Guid UserId { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
@@ -16,7 +16,7 @@ namespace web_store_server.Domain.Entities
         public DateTimeOffset ExpireOn { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
-        public virtual OauthProvider Provider { get; set; }
+        public virtual OauthClient Provider { get; set; }
         public virtual User User { get; set; }
     }
 }

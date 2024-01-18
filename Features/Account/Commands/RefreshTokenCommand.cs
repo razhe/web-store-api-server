@@ -38,17 +38,17 @@ namespace web_store_server.Features.Account.Commands
             }
 
             var jwtUserId = jwtSecurityToken.Claims.First(claim => claim.Type == "UserIdentifier").Value;
-            var jwtProviderId = jwtSecurityToken.Claims.First(claim => claim.Type == "ProviderIdentifier").Value;
+            var jwtClientId = jwtSecurityToken.Claims.First(claim => claim.Type == "ClientIdentifier").Value;
 
             var user = await _context.Users
                 .Where(x => x.Id == Guid.Parse(jwtUserId))
                 .FirstAsync(token);
 
-            var provider = await _context.OauthProviders
-                .Where(x => x.Id == int.Parse(jwtProviderId))
+            var client = await _context.OauthClients
+                .Where(x => x.Id == int.Parse(jwtClientId))
                 .FirstAsync(token);
 
-            if (provider is null ||
+            if (jwtClientId is null ||
                 user is null)
             {
                 throw new RequestException(
@@ -56,7 +56,7 @@ namespace web_store_server.Features.Account.Commands
                     title: "el JWT ha sido modificado o es incorrecto, verifica la información");
             }
 
-            var refreshExists = _context.UserOauthRequests
+            var refreshExists = _context.OauthUserClientRequests
                 .Where(x =>
                     x.AccessToken == request.RefreshTokenRequest.ExpiredToken &&
                     x.RefreshToken == request.RefreshTokenRequest.RefreshToken)
@@ -69,7 +69,7 @@ namespace web_store_server.Features.Account.Commands
                     title: "No se ha registrado un acceso a nuestro sistema con esas credenciales");
             }
 
-            return await _accountService.GetRefreshTokenAsync(request.RefreshTokenRequest, user, provider, token);
+            return await _accountService.GetRefreshTokenAsync(request.RefreshTokenRequest, user, client, token);
         }
     }
 }

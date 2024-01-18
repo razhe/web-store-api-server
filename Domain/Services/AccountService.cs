@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -26,46 +24,46 @@ namespace web_store_server.Domain.Services
 
         public async Task<AuthorizationResponse> GetAccessTokenAsync(
             User user,
-            OauthProvider provider,
+            OauthClient client,
             CancellationToken token)
         {
-            var accessToken = GenerateAccessToken(user, provider);
+            var accessToken = GenerateAccessToken(user, client);
             var refreshToken = GenerateRefreshToken();
 
-            return await SaveOAuthRequestAsync(provider.Id, user.Id, accessToken, refreshToken, token);
+            return await SaveOAuthRequestAsync(client.Id, user.Id, accessToken, refreshToken, token);
         }
 
         public async Task<AuthorizationResponse> GetRefreshTokenAsync(
             RefreshTokenRequest request,
             User user,
-            OauthProvider provider,
+            OauthClient client,
             CancellationToken token)
         {
             var refreshToken = GenerateRefreshToken();
-            var accessToken = GenerateAccessToken(user, provider);
+            var accessToken = GenerateAccessToken(user, client);
 
-            return await SaveOAuthRequestAsync(provider.Id, user.Id, accessToken, refreshToken, token);
+            return await SaveOAuthRequestAsync(client.Id, user.Id, accessToken, refreshToken, token);
         }
 
         public async Task<AuthorizationResponse> SaveOAuthRequestAsync(
-            int providerId,
+            int clientId,
             Guid userId,
             string accessToken,
             string refreshToken,
             CancellationToken token)
         {
             DateTimeOffset expireOn = DateTimeOffset.Now.AddMinutes(60);
-            UserOauthRequest oauthRequest = new()
+            OauthUserClientRequest oauthRequest = new()
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                ProviderId = providerId,
+                ClientId = clientId,
                 UserId = userId,
                 CreatedAt = DateTimeOffset.Now,
                 ExpireOn = expireOn
             };
 
-            await _context.UserOauthRequests.AddAsync(oauthRequest, token);
+            await _context.OauthUserClientRequests.AddAsync(oauthRequest, token);
             await _context.SaveChangesAsync(token);
 
             return new AuthorizationResponse { AccessToken = accessToken, RefreshToken = refreshToken, ExpireOn = expireOn };
@@ -85,7 +83,7 @@ namespace web_store_server.Domain.Services
 
         public string GenerateAccessToken(
             User user,
-            OauthProvider provider)
+            OauthClient client)
         {
             var key = _configuration.GetValue<string>("JWTSettings:Key");
             var issuer = _configuration.GetValue<string>("JWTSettings:Issuer");
@@ -95,7 +93,7 @@ namespace web_store_server.Domain.Services
 
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim("UserIdentifier", user.Id.ToString()));
-            claims.AddClaim(new Claim("ProviderIdentifier", provider.Id.ToString()));
+            claims.AddClaim(new Claim("ClientIdentifier", client.Id.ToString()));
 
             var tokenCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(keyBytes),

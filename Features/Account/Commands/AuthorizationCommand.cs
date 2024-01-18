@@ -38,14 +38,14 @@ namespace web_store_server.Features.Account.Commands
                 .Where(x => x.Email == request.AuthorizationRequest.Email)
                 .FirstOrDefaultAsync(cancellationToken: token);
 
-            var oAuthProvider = await _context.OauthProviders
+            var oAuthClient = await _context.OauthClients
                 .AsNoTracking()
                 .Where(x =>
                     x.ClientId == request.AuthorizationRequest.ClientId &&
                     x.ClientSecret == request.AuthorizationRequest.ClientSecret)
                 .FirstOrDefaultAsync(cancellationToken: token);
 
-            if (oAuthProvider is null)
+            if (oAuthClient is null)
             {
                 throw new RequestException(
                     code: StatusCodes.Status404NotFound,
@@ -67,7 +67,7 @@ namespace web_store_server.Features.Account.Commands
                     title: "Contraseña inválida");
             }
 
-            return await _accountService.GetAccessTokenAsync(user, oAuthProvider, token);
+            return await _accountService.GetAccessTokenAsync(user, oAuthClient, token);
         }
     }
 }
