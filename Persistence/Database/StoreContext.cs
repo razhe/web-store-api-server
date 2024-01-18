@@ -23,7 +23,7 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryType> DeliveryTypes { get; set; }
         public virtual DbSet<OauthClient> OauthClients { get; set; }
-        public virtual DbSet<OauthUserClientRequest> OauthUserClientRequests { get; set; }
+        public virtual DbSet<UserOauthClientRequest> OauthUserClientRequests { get; set; }
         public virtual DbSet<Offer> Offers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<PasswordReset> PasswordResets { get; set; }
@@ -219,9 +219,9 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("redirect_uri");
             });
 
-            modelBuilder.Entity<OauthUserClientRequest>(entity =>
+            modelBuilder.Entity<UserOauthClientRequest>(entity =>
             {
-                entity.ToTable("oauth_user_client_requests");
+                entity.ToTable("user_oauth_client_requests");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

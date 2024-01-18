@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace web_store_server.Domain.Entities
 {
-    public partial class OauthUserClientRequest
+    public partial class UserOauthClientRequest
     {
         public int Id { get; set; }
         public int ClientId { get; set; }

@@ -53,7 +53,7 @@ namespace web_store_server.Domain.Services
             CancellationToken token)
         {
             DateTimeOffset expireOn = DateTimeOffset.Now.AddMinutes(60);
-            OauthUserClientRequest oauthRequest = new()
+            UserOauthClientRequest oauthRequest = new()
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,

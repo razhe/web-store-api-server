@@ -9,7 +9,7 @@ namespace web_store_server.Domain.Entities
     {
         public OauthClient()
         {
-            OauthUserClientRequests = new HashSet<OauthUserClientRequest>();
+            OauthUserClientRequests = new HashSet<UserOauthClientRequest>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,6 @@ namespace web_store_server.Domain.Entities
         public string RedirectUri { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
-        public virtual ICollection<OauthUserClientRequest> OauthUserClientRequests { get; set; }
+        public virtual ICollection<UserOauthClientRequest> OauthUserClientRequests { get; set; }
     }
 }
