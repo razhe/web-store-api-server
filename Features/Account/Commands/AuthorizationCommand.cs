@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
@@ -10,10 +11,10 @@ using web_store_server.Shared.Resources;
 namespace web_store_server.Features.Account.Commands
 {
     public record AuthorizationCommand(GetAuthorizationDto AuthorizationRequest) :
-        IRequest<CreateAuthorizationDto>;
+        IRequest<Result<CreateAuthorizationDto>>;
 
     public class AuthorizationCommandHandler
-        : IRequestHandler<AuthorizationCommand, CreateAuthorizationDto>
+        : IRequestHandler<AuthorizationCommand, Result<CreateAuthorizationDto>>
     {
         private readonly StoreContext _context;
         private readonly IAccountService _accountService;
@@ -26,7 +27,7 @@ namespace web_store_server.Features.Account.Commands
             _accountService = accountService;
         }
 
-        public async Task<CreateAuthorizationDto> Handle(
+        public async Task<Result<CreateAuthorizationDto>> Handle(
             AuthorizationCommand request,
             CancellationToken token)
         {
@@ -44,27 +45,21 @@ namespace web_store_server.Features.Account.Commands
 
             if (oAuthClient is null)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status404NotFound,
-                    title: "cliente inválido");
+                return new Result<CreateAuthorizationDto>("Error, cliente inválido.");
             }
 
             if (user is null)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status400BadRequest,
-                    title: "No existe ningun usuario ligado a ese correo",
-                    errors: new List<Error> { new Error(propertyName: "password", errorMessage: "no existe ningun usuario con ese correo, verifique la información") });
+                return new Result<CreateAuthorizationDto>("no existe ningun usuario con ese correo, verifique la información");
             }
 
             if (user.VerifyPassoword(request.AuthorizationRequest.Password) == false)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status400BadRequest,
-                    title: "Contraseña inválida");
+                return new Result<CreateAuthorizationDto>("Contraseña inválida");
             }
 
-            return await _accountService.GetAccessTokenAsync(user, oAuthClient, token);
+            var response = await _accountService.GetAccessTokenAsync(user, oAuthClient, token);
+            return new Result<CreateAuthorizationDto>(response);
         }
     }
 }

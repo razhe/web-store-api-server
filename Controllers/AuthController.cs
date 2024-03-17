@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Features.Account.Commands;
 
@@ -10,10 +11,12 @@ namespace web_store_server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ErrorResultHandler _errorResultHandler;
 
-        public AuthController(ISender sender)
+        public AuthController(ISender sender, ErrorResultHandler errorResultHandler)
         {
             _sender = sender;
+            _errorResultHandler = errorResultHandler;
         }
 
         /// <summary>
@@ -28,8 +31,12 @@ namespace web_store_server.Controllers
             CancellationToken token)
         {
             var result = await _sender.Send(new AuthorizationCommand(request), token);
-            return Ok(result);
+
+            return result.IsSuccess ? 
+                Ok(result) : 
+                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
+
         /// <summary>
         /// Permite refrescar el token de acceso del usuario
         /// </summary>

@@ -25,6 +25,8 @@ namespace web_store_server.Controllers
         public async Task<ActionResult<IEnumerable<GetProductDto>>> GetAllProducts(
             CancellationToken token)
         {
+            
+
             var result = await _sender.Send(new GetProductsQuery(), token);
             return Ok(result);
         }
