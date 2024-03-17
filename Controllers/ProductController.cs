@@ -21,22 +21,16 @@ namespace web_store_server.Controllers
             _sender = sender;
         }
 
-        [ProducesResponseType(
-            typeof(IEnumerable<GetProductDto>),
-            StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts(
+        public async Task<ActionResult<IEnumerable<GetProductDto>>> GetAllProducts(
             CancellationToken token)
         {
             var result = await _sender.Send(new GetProductsQuery(), token);
             return Ok(result);
         }
 
-        [ProducesResponseType(
-            typeof(GetProductDto),
-            StatusCodes.Status200OK)]
         [HttpGet("{id:Guid}")]
-        public async Task<IActionResult> GetProductById(
+        public async Task<ActionResult<GetProductDto>> GetProductById(
             Guid id,
             CancellationToken token)
         {
@@ -44,7 +38,6 @@ namespace web_store_server.Controllers
             return StatusCode(200, result);
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(
             CreateProductDto request,
@@ -54,7 +47,6 @@ namespace web_store_server.Controllers
             return StatusCode(201);
         }
 
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct(
             UpdateProductDto updateProductDto,
@@ -64,7 +56,6 @@ namespace web_store_server.Controllers
             return StatusCode(204);
         }
 
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteProduct(
             Guid id,
@@ -72,17 +63,6 @@ namespace web_store_server.Controllers
         {
             await _sender.Send(new DeleteProductCommand(id), token);
             return StatusCode(204);
-        }
-
-        [HttpGet("excel")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GenerateExcelTest()
-        {
-            var filename = "ExcelFrom" + DateTime.Now.ToString("mm_dd_yyy_hh_ss") + ".xls";
-
-            var template = await RazorTemplateEngine.RenderAsync("~/Shared/baseExcel.cshtml");
-
-            return File(Encoding.ASCII.GetBytes(template), "application/vnd.ms-excel", filename);
         }
     }
 }

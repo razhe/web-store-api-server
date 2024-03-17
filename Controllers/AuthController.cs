@@ -16,7 +16,12 @@ namespace web_store_server.Controllers
             _sender = sender;
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <summary>
+        /// Permite iniciar sesión al usuario
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<ActionResult<CreateAuthorizationDto>> GetLogin(
             GetAuthorizationDto request,
@@ -25,8 +30,12 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new AuthorizationCommand(request), token);
             return Ok(result);
         }
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <summary>
+        /// Permite refrescar el token de acceso del usuario
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpPost("refreshToken")]
         public async Task<ActionResult> GetRefreshToken(
             GetRefreshTokenDto request,
