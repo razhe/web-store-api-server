@@ -2,18 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
-using web_store_server.Domain.Contracts;
-using web_store_server.Dtos.Accounts;
+using web_store_server.Domain.Dtos.Accounts;
+using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
 using web_store_server.Shared.Resources;
 
 namespace web_store_server.Features.Account.Commands
 {
-    public record AuthorizationCommand(AuthorizationRequest AuthorizationRequest) :
-        IRequest<AuthorizationResponse>;
+    public record AuthorizationCommand(GetAuthorizationDto AuthorizationRequest) :
+        IRequest<CreateAuthorizationDto>;
 
     public class AuthorizationCommandHandler
-        : IRequestHandler<AuthorizationCommand, AuthorizationResponse>
+        : IRequestHandler<AuthorizationCommand, CreateAuthorizationDto>
     {
         private readonly StoreContext _context;
         private readonly IAccountService _accountService;
@@ -26,7 +26,7 @@ namespace web_store_server.Features.Account.Commands
             _accountService = accountService;
         }
 
-        public async Task<AuthorizationResponse> Handle(
+        public async Task<CreateAuthorizationDto> Handle(
             AuthorizationCommand request,
             CancellationToken token)
         {

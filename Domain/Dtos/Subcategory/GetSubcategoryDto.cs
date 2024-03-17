@@ -1,4 +1,4 @@
-﻿namespace web_store_server.Dtos.Subcategories
+﻿namespace web_store_server.Domain.Dtos.Subcategories
 {
     public class GetSubcategoryDto
     {

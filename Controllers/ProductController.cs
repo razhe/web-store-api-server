@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Razor.Templating.Core;
+using System.Text;
 using web_store_mvc.Features.Products.Commands;
 using web_store_mvc.Features.Products.Queries;
-using web_store_server.Dtos.Products;
+using web_store_server.Domain.Dtos.Products;
 
 namespace web_store_server.Controllers
 {
@@ -70,6 +72,17 @@ namespace web_store_server.Controllers
         {
             await _sender.Send(new DeleteProductCommand(id), token);
             return StatusCode(204);
+        }
+
+        [HttpGet("excel")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateExcelTest()
+        {
+            var filename = "ExcelFrom" + DateTime.Now.ToString("mm_dd_yyy_hh_ss") + ".xls";
+
+            var template = await RazorTemplateEngine.RenderAsync("~/Shared/baseExcel.cshtml");
+
+            return File(Encoding.ASCII.GetBytes(template), "application/vnd.ms-excel", filename);
         }
     }
 }

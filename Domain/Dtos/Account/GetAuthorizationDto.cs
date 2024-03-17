@@ -1,8 +1,8 @@
 ﻿using web_store_server.Common.Enums;
 
-namespace web_store_server.Dtos.Accounts
+namespace web_store_server.Domain.Dtos.Accounts
 {
-    public class AuthorizationRequest
+    public class GetAuthorizationDto
     {
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;

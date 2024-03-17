@@ -2,17 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using web_store_server.Common.Exceptions;
-using web_store_server.Domain.Contracts;
-using web_store_server.Dtos.Accounts;
+using web_store_server.Domain.Dtos.Accounts;
+using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Account.Commands
 {
-    public record RefreshTokenCommand(RefreshTokenRequest RefreshTokenRequest) : 
-        IRequest<AuthorizationResponse>;
+    public record RefreshTokenCommand(GetRefreshTokenDto RefreshTokenRequest) : 
+        IRequest<CreateAuthorizationDto>;
 
     public class RefreshTokenCommandHandler :
-        IRequestHandler<RefreshTokenCommand, AuthorizationResponse>
+        IRequestHandler<RefreshTokenCommand, CreateAuthorizationDto>
     {
         private readonly IAccountService _accountService;
         private readonly StoreContext _context;
@@ -23,7 +23,7 @@ namespace web_store_server.Features.Account.Commands
             _context = context;
         }
 
-        public async Task<AuthorizationResponse> Handle(
+        public async Task<CreateAuthorizationDto> Handle(
             RefreshTokenCommand request, 
             CancellationToken token)
         {

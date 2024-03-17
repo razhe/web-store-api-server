@@ -1,6 +1,6 @@
-﻿namespace web_store_server.Dtos.Accounts
+﻿namespace web_store_server.Domain.Dtos.Accounts
 {
-    public class AuthorizationResponse
+    public class CreateAuthorizationDto
     {
         public string AccessToken { get; set; } = null!;
         public string RefreshToken { get; set; } = null!;

@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using web_store_server.Dtos.Products;
+using web_store_server.Domain.Dtos.Products;
 using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Queries

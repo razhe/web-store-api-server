@@ -3,12 +3,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using web_store_server.Domain.Contracts;
+using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Entities;
-using web_store_server.Dtos.Accounts;
 using web_store_server.Persistence.Database;
 
-namespace web_store_server.Domain.Services
+namespace web_store_server.Domain.Services.Account
 {
     public class AccountService :
         IAccountService
@@ -22,7 +21,7 @@ namespace web_store_server.Domain.Services
             _context = context;
         }
 
-        public async Task<AuthorizationResponse> GetAccessTokenAsync(
+        public async Task<CreateAuthorizationDto> GetAccessTokenAsync(
             User user,
             OauthClient client,
             CancellationToken token)
@@ -33,8 +32,8 @@ namespace web_store_server.Domain.Services
             return await SaveOAuthRequestAsync(client.Id, user.Id, accessToken, refreshToken, token);
         }
 
-        public async Task<AuthorizationResponse> GetRefreshTokenAsync(
-            RefreshTokenRequest request,
+        public async Task<CreateAuthorizationDto> GetRefreshTokenAsync(
+            GetRefreshTokenDto request,
             User user,
             OauthClient client,
             CancellationToken token)
@@ -45,7 +44,7 @@ namespace web_store_server.Domain.Services
             return await SaveOAuthRequestAsync(client.Id, user.Id, accessToken, refreshToken, token);
         }
 
-        public async Task<AuthorizationResponse> SaveOAuthRequestAsync(
+        public async Task<CreateAuthorizationDto> SaveOAuthRequestAsync(
             int clientId,
             Guid userId,
             string accessToken,
@@ -66,7 +65,7 @@ namespace web_store_server.Domain.Services
             await _context.OauthUserClientRequests.AddAsync(oauthRequest, token);
             await _context.SaveChangesAsync(token);
 
-            return new AuthorizationResponse { AccessToken = accessToken, RefreshToken = refreshToken, ExpireOn = expireOn };
+            return new CreateAuthorizationDto { AccessToken = accessToken, RefreshToken = refreshToken, ExpireOn = expireOn };
         }
 
         public string GenerateRefreshToken()

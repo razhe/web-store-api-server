@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using web_store_server.Dtos.Accounts;
+using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Features.Account.Commands;
 
 namespace web_store_server.Controllers
@@ -18,8 +18,8 @@ namespace web_store_server.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("login")]
-        public async Task<ActionResult<AuthorizationResponse>> GetLogin(
-            AuthorizationRequest request,
+        public async Task<ActionResult<CreateAuthorizationDto>> GetLogin(
+            GetAuthorizationDto request,
             CancellationToken token)
         {
             var result = await _sender.Send(new AuthorizationCommand(request), token);
@@ -29,7 +29,7 @@ namespace web_store_server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("refreshToken")]
         public async Task<ActionResult> GetRefreshToken(
-            RefreshTokenRequest request,
+            GetRefreshTokenDto request,
             CancellationToken token)
         {
             var result = await _sender.Send(new RefreshTokenCommand(request), token);
