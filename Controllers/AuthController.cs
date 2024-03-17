@@ -33,7 +33,7 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new AuthorizationCommand(request), token);
 
             return result.IsSuccess ? 
-                Ok(result) : 
+                Ok(result.Data) : 
                 _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
 
@@ -49,7 +49,10 @@ namespace web_store_server.Controllers
             CancellationToken token)
         {
             var result = await _sender.Send(new RefreshTokenCommand(request), token);
-            return Ok(result);
+
+            return result.IsSuccess ?
+                Ok(result.Data) :
+                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
     }
 }

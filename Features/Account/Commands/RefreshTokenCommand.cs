@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using web_store_server.Common.Exceptions;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
@@ -10,10 +11,10 @@ using web_store_server.Persistence.Database;
 namespace web_store_server.Features.Account.Commands
 {
     public record RefreshTokenCommand(GetRefreshTokenDto RefreshTokenRequest) : 
-        IRequest<CreateAuthorizationDto>;
+        IRequest<Result<CreateAuthorizationDto>>;
 
     public class RefreshTokenCommandHandler :
-        IRequestHandler<RefreshTokenCommand, CreateAuthorizationDto>
+        IRequestHandler<RefreshTokenCommand, Result<CreateAuthorizationDto>>
     {
         private readonly IAccountService _accountService;
         private readonly StoreContext _context;
@@ -24,7 +25,7 @@ namespace web_store_server.Features.Account.Commands
             _context = context;
         }
 
-        public async Task<CreateAuthorizationDto> Handle(
+        public async Task<Result<CreateAuthorizationDto>> Handle(
             RefreshTokenCommand request, 
             CancellationToken token)
         {
@@ -33,9 +34,7 @@ namespace web_store_server.Features.Account.Commands
 
             if (jwtSecurityToken.ValidTo > DateTimeOffset.Now)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status400BadRequest,
-                    title: "el Token aún no ha expirado");
+                return new Result<CreateAuthorizationDto>("Error, el token aun no ha expirado");
             }
 
             var jwtUserId = jwtSecurityToken.Claims.First(Claim => Claim.Type == ClaimTypes.NameIdentifier).Value;
@@ -49,12 +48,9 @@ namespace web_store_server.Features.Account.Commands
                 .Where(x => x.Id == int.Parse(jwtClientId))
                 .FirstAsync(token);
 
-            if (jwtClientId is null ||
-                user is null)
+            if (jwtClientId is null || user is null)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status400BadRequest,
-                    title: "el JWT ha sido modificado o es incorrecto, verifica la información");
+                return new Result<CreateAuthorizationDto>("El JWT ha sido modificado o es incorrecto, verifica la información");
             }
 
             var refreshExists = _context.OauthUserClientRequests
@@ -65,12 +61,10 @@ namespace web_store_server.Features.Account.Commands
 
             if (refreshExists is null)
             {
-                throw new RequestException(
-                    code: StatusCodes.Status400BadRequest,
-                    title: "No se ha registrado un acceso a nuestro sistema con esas credenciales");
+                return new Result<CreateAuthorizationDto>("No se ha registrado un acceso a nuestro sistema con esas credenciales");
             }
-
-            return await _accountService.GetRefreshTokenAsync(request.RefreshTokenRequest, user, client, token);
+            var response = await _accountService.GetRefreshTokenAsync(request.RefreshTokenRequest, user, client, token);
+            return new Result<CreateAuthorizationDto>(response);
         }
     }
 }
