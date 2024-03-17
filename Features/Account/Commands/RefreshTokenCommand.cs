@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using web_store_server.Common.Exceptions;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;
@@ -37,7 +38,7 @@ namespace web_store_server.Features.Account.Commands
                     title: "el Token aún no ha expirado");
             }
 
-            var jwtUserId = jwtSecurityToken.Claims.First(claim => claim.Type == "UserIdentifier").Value;
+            var jwtUserId = jwtSecurityToken.Claims.First(Claim => Claim.Type == ClaimTypes.NameIdentifier).Value;
             var jwtClientId = jwtSecurityToken.Claims.First(claim => claim.Type == "ClientIdentifier").Value;
 
             var user = await _context.Users

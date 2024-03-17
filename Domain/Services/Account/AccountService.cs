@@ -71,11 +71,10 @@ namespace web_store_server.Domain.Services.Account
         public string GenerateRefreshToken()
         {
             byte[] byteArray = new byte[64];
-            string refreshToken = "";
 
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(byteArray);
-            refreshToken = Convert.ToBase64String(byteArray);
+            var refreshToken = Convert.ToBase64String(byteArray);
 
             return refreshToken;
         }
@@ -91,7 +90,7 @@ namespace web_store_server.Domain.Services.Account
             var keyBytes = Encoding.ASCII.GetBytes(key);
 
             var claims = new ClaimsIdentity();
-            claims.AddClaim(new Claim("UserIdentifier", user.Id.ToString()));
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claims.AddClaim(new Claim("ClientIdentifier", client.Id.ToString()));
 
             var tokenCredentials = new SigningCredentials(
