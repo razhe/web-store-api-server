@@ -37,8 +37,13 @@ namespace web_store_server.Features.Account.Commands
                 return new Result<CreateAuthorizationDto>("Error, el token aun no ha expirado");
             }
 
-            var jwtUserId = jwtSecurityToken.Claims.First(Claim => Claim.Type == ClaimTypes.NameIdentifier).Value;
-            var jwtClientId = jwtSecurityToken.Claims.First(claim => claim.Type == "ClientIdentifier").Value;
+            var jwtUserId = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "nameid")?.Value;
+            var jwtClientId = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "ClientIdentifier")?.Value;
+
+            if (jwtUserId is null || jwtClientId is null)
+            {
+                return new Result<CreateAuthorizationDto>("Error, Token inválido o alterado.");
+            }
 
             var user = await _context.Users
                 .Where(x => x.Id == Guid.Parse(jwtUserId))
@@ -48,9 +53,9 @@ namespace web_store_server.Features.Account.Commands
                 .Where(x => x.Id == int.Parse(jwtClientId))
                 .FirstAsync(token);
 
-            if (jwtClientId is null || user is null)
+            if (user is null)
             {
-                return new Result<CreateAuthorizationDto>("El JWT ha sido modificado o es incorrecto, verifica la información");
+                return new Result<CreateAuthorizationDto>("Usuario no encontrado, verifica la información");
             }
 
             var refreshExists = _context.OauthUserClientRequests

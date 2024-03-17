@@ -2,16 +2,17 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Products;
 using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Queries
 {
     public record GetProductsQuery :
-        IRequest<IEnumerable<GetProductDto>>;
+        IRequest<Result<IEnumerable<GetProductDto>>>;
 
     public class GetProductsQueryHandler :
-        IRequestHandler<GetProductsQuery, IEnumerable<GetProductDto>>
+        IRequestHandler<GetProductsQuery, Result<IEnumerable<GetProductDto>>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
@@ -22,15 +23,16 @@ namespace web_store_mvc.Features.Products.Queries
             _context = context;
         }
 
-        public async Task<IEnumerable<GetProductDto>> Handle(
+        public async Task<Result<IEnumerable<GetProductDto>>> Handle(
             GetProductsQuery request,
             CancellationToken token)
         {
-            return await _context
+            var response = await _context
                 .Products
                 .Where(p => p.DeletedAt == null)
-                .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider)
-                .ToArrayAsync(token);
+                .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).ToArrayAsync(token);
+
+            return new Result<IEnumerable<GetProductDto>>(response);
         }
     }
 }
