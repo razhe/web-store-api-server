@@ -16,10 +16,6 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[coupons]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[customer_address]",
          "ObjectType": 0
       },
@@ -37,10 +33,6 @@
       },
       {
          "Name": "[dbo].[oauth_clients]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[oauth_user_client_requests]",
          "ObjectType": 0
       },
       {
@@ -100,6 +92,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[user_oauth_client_requests]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[users]",
          "ObjectType": 0
       }
@@ -122,6 +118,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,

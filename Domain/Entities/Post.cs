@@ -18,6 +18,7 @@ namespace web_store_server.Domain.Entities
         public string Title { get; set; }
         public string Content { get; set; }
         public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }

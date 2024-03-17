@@ -14,14 +14,12 @@ namespace web_store_server.Domain.Entities
 
         public Guid Id { get; set; }
         public Guid OrderId { get; set; }
-        public Guid? CouponId { get; set; }
         public long Subtotal { get; set; }
         public long Total { get; set; }
         public int Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? VirifiedAt { get; set; }
 
-        public virtual Coupon Coupon { get; set; }
         public virtual Order Order { get; set; }
         public virtual ICollection<ProductSale> ProductSales { get; set; }
     }

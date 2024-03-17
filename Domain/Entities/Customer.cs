@@ -19,6 +19,7 @@ namespace web_store_server.Domain.Entities
         public string LastName { get; set; }
         public string Phone { get; set; }
         public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }

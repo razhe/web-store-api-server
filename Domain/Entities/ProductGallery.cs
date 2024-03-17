@@ -11,7 +11,7 @@ namespace web_store_server.Domain.Entities
         public Guid ProductId { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
-        public string MimeType { get; set; }
+        public string ContentType { get; set; }
         public long Length { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 

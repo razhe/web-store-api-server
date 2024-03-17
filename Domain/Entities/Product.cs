@@ -19,12 +19,13 @@ namespace web_store_server.Domain.Entities
         public int BrandId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long? Price { get; set; }
+        public long Price { get; set; }
         public int Stock { get; set; }
         public string Sku { get; set; }
         public string Slug { get; set; }
         public List<string> Tags { get; set; }
         public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }

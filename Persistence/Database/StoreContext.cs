@@ -17,13 +17,11 @@ namespace web_store_server.Persistence.Database
         {
         }
 
-        public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryType> DeliveryTypes { get; set; }
         public virtual DbSet<OauthClient> OauthClients { get; set; }
-        public virtual DbSet<UserOauthClientRequest> OauthUserClientRequests { get; set; }
         public virtual DbSet<Offer> Offers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<PasswordReset> PasswordResets { get; set; }
@@ -39,31 +37,10 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<ProductSubcategory> ProductSubcategories { get; set; }
         public virtual DbSet<Sale> Sales { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+        public virtual DbSet<UserOauthClientRequest> UserOauthClientRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Coupon>(entity =>
-            {
-                entity.ToTable("coupons");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(150)
-                    .HasColumnName("code");
-
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-
-                entity.Property(e => e.Discount).HasColumnName("discount");
-
-                entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
-            });
-
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("customers");
@@ -74,7 +51,9 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
 
@@ -82,6 +61,8 @@ namespace web_store_server.Persistence.Database
                     .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("first_name");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(255)
@@ -114,7 +95,9 @@ namespace web_store_server.Persistence.Database
                     .HasMaxLength(500)
                     .HasColumnName("aditional_info");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
@@ -148,7 +131,9 @@ namespace web_store_server.Persistence.Database
                     .HasMaxLength(255)
                     .HasColumnName("carrier");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.EstimatedDeliveryDate).HasColumnName("estimated_delivery_date");
 
@@ -192,7 +177,8 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(150)
-                    .HasColumnName("name");
+                    .HasColumnName("name")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
             });
 
             modelBuilder.Entity<OauthClient>(entity =>
@@ -212,50 +198,13 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.ClientSecret).HasColumnName("client_secret");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.RedirectUri)
                     .HasMaxLength(500)
                     .HasColumnName("redirect_uri");
-            });
-
-            modelBuilder.Entity<UserOauthClientRequest>(entity =>
-            {
-                entity.ToTable("user_oauth_client_requests");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.AccessToken)
-                    .IsRequired()
-                    .HasColumnName("access_token");
-
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-
-                entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
-
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("isActive")
-                    .HasComputedColumnSql("(case when [expire_on]<sysdatetimeoffset() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
-
-                entity.Property(e => e.ClientId).HasColumnName("provider_id");
-
-                entity.Property(e => e.RefreshToken)
-                    .IsRequired()
-                    .HasColumnName("refresh_token");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Provider)
-                    .WithMany(p => p.OauthUserClientRequests)
-                    .HasForeignKey(d => d.ClientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_user_oauth_request_oauth_providers");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.OauthUserClientRequests)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_user_oauth_request_users");
             });
 
             modelBuilder.Entity<Offer>(entity =>
@@ -266,7 +215,9 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.Discount).HasColumnName("discount");
 
@@ -286,7 +237,9 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
@@ -315,7 +268,9 @@ namespace web_store_server.Persistence.Database
                     .HasMaxLength(6)
                     .HasColumnName("code");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
 
@@ -342,9 +297,13 @@ namespace web_store_server.Persistence.Database
                     .IsRequired()
                     .HasColumnName("content");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
@@ -376,7 +335,14 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.ContentType)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("content_type");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.FileName)
                     .IsRequired()
@@ -387,11 +353,6 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("file_path");
 
                 entity.Property(e => e.Length).HasColumnName("length");
-
-                entity.Property(e => e.MimeType)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("mime_type");
 
                 entity.Property(e => e.PostId).HasColumnName("post_id");
 
@@ -410,9 +371,13 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -435,13 +400,17 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.BrandId).HasColumnName("brand_id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("description");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -491,9 +460,13 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -511,9 +484,13 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -531,7 +508,14 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.ContentType)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("content_type");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.FileName)
                     .IsRequired()
@@ -542,11 +526,6 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("file_path");
 
                 entity.Property(e => e.Length).HasColumnName("length");
-
-                entity.Property(e => e.MimeType)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("mime_type");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
@@ -621,9 +600,13 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -648,9 +631,9 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.CouponId).HasColumnName("coupon_id");
-
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -661,11 +644,6 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Total).HasColumnName("total");
 
                 entity.Property(e => e.VirifiedAt).HasColumnName("virified_at");
-
-                entity.HasOne(d => d.Coupon)
-                    .WithMany(p => p.Sales)
-                    .HasForeignKey(d => d.CouponId)
-                    .HasConstraintName("FK_sales_coupons");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Sales)
@@ -686,7 +664,9 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -699,6 +679,47 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+            });
+
+            modelBuilder.Entity<UserOauthClientRequest>(entity =>
+            {
+                entity.ToTable("user_oauth_client_requests");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AccessToken)
+                    .IsRequired()
+                    .HasColumnName("access_token");
+
+                entity.Property(e => e.ClientId).HasColumnName("client_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(sysdatetimeoffset())");
+
+                entity.Property(e => e.ExpireOn).HasColumnName("expire_on");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("isActive")
+                    .HasComputedColumnSql("(case when [expire_on]<sysdatetimeoffset() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+
+                entity.Property(e => e.RefreshToken)
+                    .IsRequired()
+                    .HasColumnName("refresh_token");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.UserOauthClientRequests)
+                    .HasForeignKey(d => d.ClientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_request_oauth_clients");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserOauthClientRequests)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_request_users");
             });
 
             OnModelCreatingPartial(modelBuilder);

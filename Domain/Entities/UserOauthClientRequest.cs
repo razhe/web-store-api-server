@@ -16,7 +16,7 @@ namespace web_store_server.Domain.Entities
         public DateTimeOffset ExpireOn { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
-        public virtual OauthClient Provider { get; set; }
+        public virtual OauthClient Client { get; set; }
         public virtual User User { get; set; }
     }
 }
