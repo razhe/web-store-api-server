@@ -58,7 +58,7 @@ namespace web_store_server.Features.Account.Commands
                 return new Result<CreateAuthorizationDto>("Usuario no encontrado, verifica la información");
             }
 
-            var refreshExists = _context.OauthUserClientRequests
+            var refreshExists = _context.UserOauthClientRequests
                 .Where(x =>
                     x.AccessToken == request.RefreshTokenRequest.ExpiredToken &&
                     x.RefreshToken == request.RefreshTokenRequest.RefreshToken)

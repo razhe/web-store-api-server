@@ -70,16 +70,21 @@ namespace web_store_server.Controllers
         /// <summary>
         /// Permite actualizar un producto
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="updateProductDto"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateProduct(
-            UpdateProductDto updateProductDto,
+            [FromRoute] Guid id,
+            [FromBody] UpdateProductDto updateProductDto,
             CancellationToken token)
         {
-            await _sender.Send(new UpdateProductCommand(updateProductDto), token);
-            return Ok();
+            var result = await _sender.Send(new UpdateProductCommand(updateProductDto, id), token);
+                
+            return result.IsSuccess ?
+                Ok(result.Data) :
+                __errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
 
         [HttpDelete("{id:Guid}")]
@@ -87,8 +92,11 @@ namespace web_store_server.Controllers
             Guid id,
             CancellationToken token)
         {
-            await _sender.Send(new DeleteProductCommand(id), token);
-            return Ok();
+            var result = await _sender.Send(new DeleteProductCommand(id), token);
+
+            return result.IsSuccess ?
+                Ok() :
+                __errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
     }
 }

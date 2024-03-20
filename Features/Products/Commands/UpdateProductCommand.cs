@@ -1,42 +1,51 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using web_store_server.Domain.Communication;
+using web_store_server.Domain.Dtos.Product;
 using web_store_server.Domain.Dtos.Products;
 using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Commands
 {
-    public record UpdateProductCommand(UpdateProductDto UpdateProductDto) : IRequest;
+    public record UpdateProductCommand(UpdateProductDto UpdateProductDto, Guid productId) : 
+        IRequest<Result<ProductDto>>;
 
     public class UpdateProductCommandHandler :
-        IRequestHandler<UpdateProductCommand>
+        IRequestHandler<UpdateProductCommand, Result<ProductDto>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
+        private readonly ErrorResultHandler _errorResultHandler;
 
-        public UpdateProductCommandHandler(IMapper mapper, StoreContext context)
+        public UpdateProductCommandHandler(IMapper mapper, StoreContext context, ErrorResultHandler errorResultHandler)
         {
             _mapper = mapper;
             _context = context;
+            _errorResultHandler = errorResultHandler;
         }
 
-        public async Task Handle(
+        public async Task<Result<ProductDto>> Handle(
             UpdateProductCommand request, 
             CancellationToken token)
         {
-            Product productUpdated = _mapper.Map<UpdateProductDto, Product>(request.UpdateProductDto);
-
             var product = await _context
                 .Products
-                .Where(x => x.Id == request.UpdateProductDto.Id)
-                .FirstAsync(token);
+                .Where(x => x.Id == request.productId)
+                .FirstOrDefaultAsync(token);
 
-            _context.Entry(product).CurrentValues.SetValues(productUpdated);
+            if (product is null)
+            {
+                return new Result<ProductDto>("No se ha encontrado un producto con ese identificador.");
+            }
 
+            request.UpdateProductDto.MapToModel(product);
             await _context.SaveChangesAsync(token);
 
-            return;
+            ProductDto productUpdated = _mapper.Map<ProductDto>(product);
+
+            return new Result<ProductDto>(productUpdated);
         }
     }
 }

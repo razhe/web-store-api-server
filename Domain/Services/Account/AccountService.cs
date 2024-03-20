@@ -62,7 +62,7 @@ namespace web_store_server.Domain.Services.Account
                 ExpireOn = expireOn
             };
 
-            await _context.OauthUserClientRequests.AddAsync(oauthRequest, token);
+            await _context.UserOauthClientRequests.AddAsync(oauthRequest, token);
             await _context.SaveChangesAsync(token);
 
             return new CreateAuthorizationDto { AccessToken = accessToken, RefreshToken = refreshToken, ExpireOn = expireOn };

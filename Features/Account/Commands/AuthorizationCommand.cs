@@ -1,12 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using web_store_server.Common.Exceptions;
 using web_store_server.Common.Extensions;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
-using web_store_server.Shared.Resources;
 
 namespace web_store_server.Features.Account.Commands
 {
