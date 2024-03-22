@@ -27,7 +27,7 @@ namespace web_store_server.Domain.Dtos.Products
             p.Slug = Slug;
             p.Tags = Tags;
             p.Active = Active;
-            p.UpdatedAt = DateTimeOffset.Now;
+            //p.UpdatedAt = DateTimeOffset.Now;
         }
     }
 }

@@ -3,6 +3,7 @@
 using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Entities;
+using web_store_server.Domain.Interceptors;
 
 namespace web_store_server.Persistence.Database
 {
@@ -16,6 +17,12 @@ namespace web_store_server.Persistence.Database
             : base(options)
         {
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.AddInterceptors(new AuditableEntitiesInterceptor());
+        //    base.OnConfiguring(optionsBuilder);
+        //}
 
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }

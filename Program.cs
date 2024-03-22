@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Interceptors;
 using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
 using web_store_server.Shared.Middlewares;
@@ -57,8 +58,9 @@ builder.Services.AddTransient<ErrorResultHandler>();
 /*
  * Database
  */
-builder.Services.AddDbContext<StoreContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+builder.Services.AddDbContext<StoreContext>(options => options
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .AddInterceptors(new AuditableEntitiesInterceptor())
     .UseJsonFunctions());
 
 /*

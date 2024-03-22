@@ -20,9 +20,7 @@ namespace web_store_server.Domain.Profiles
 
             CreateMap<CreateProductDto, Product>()
                 .ForMember(dest =>
-                    dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
-                .ForMember(dest =>
-                    dest.CreatedAt, opt => opt.MapFrom(src => DateTimeOffset.Now));
+                    dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
         }
     }
 }
