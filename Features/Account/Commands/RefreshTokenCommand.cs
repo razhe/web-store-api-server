@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using web_store_server.Common.Exceptions;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;

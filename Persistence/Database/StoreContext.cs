@@ -444,7 +444,9 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("tags")
                     .HasJsonConversion();
 
-                entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnName("updated_at")
+                    .IsConcurrencyToken();
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)

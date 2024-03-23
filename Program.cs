@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(opts =>
  *  Services
  */
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program).Assembly));
-builder.Services.AddScoped<RequestExceptionMiddleware>();
+builder.Services.AddScoped<GobalExceptionHandlerMiddleware>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddTransient<ErrorResultHandler>();
@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
 /*
  * Middlewares
  */
-app.UseMiddleware<RequestExceptionMiddleware>();
+app.UseMiddleware<GobalExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
