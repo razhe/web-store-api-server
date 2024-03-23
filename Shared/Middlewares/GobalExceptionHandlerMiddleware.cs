@@ -29,7 +29,7 @@ namespace web_store_server.Shared.Middlewares
             catch (Exception ex)
             {
 
-                _logger.LogError("Exception Ocurred:\n [Source]: {Source}  \n [Message]: {Message}", ex.Source, ex.Message);
+                _logger.LogError("¡Exception Ocurred! \n [Source]: {Source}  \n [Message]: {Message}", ex.Source, ex.Message);
 
                 var problemDetails = _factory.CreateProblemDetails(
                     httpContext: context,
