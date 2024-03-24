@@ -2,10 +2,12 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using web_store_server.Domain.Entities;
 
-namespace web_store_server.Domain.Entities
+namespace web_store_server.Persistence.Database
 {
     public partial class StoreContext : DbContext
     {
@@ -436,7 +438,7 @@ namespace web_store_server.Domain.Entities
 
                 entity.Property(e => e.SubcategoryId).HasColumnName("subcategory_id");
 
-                entity.Property(e => e.Tags).HasColumnName("tags");
+                entity.Property(e => e.Tags).HasColumnName("tags").HasJsonConversion();
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
