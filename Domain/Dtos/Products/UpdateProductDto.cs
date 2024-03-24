@@ -1,6 +1,4 @@
-﻿using web_store_server.Domain.Entities;
-
-namespace web_store_server.Domain.Dtos.Products
+﻿namespace web_store_server.Domain.Dtos.Products
 {
     public class UpdateProductDto
     {

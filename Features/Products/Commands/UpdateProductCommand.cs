@@ -2,9 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Communication;
-using web_store_server.Domain.Dtos.Product;
 using web_store_server.Domain.Dtos.Products;
-using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Commands
@@ -17,13 +15,11 @@ namespace web_store_mvc.Features.Products.Commands
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
-        private readonly ErrorResultHandler _errorResultHandler;
 
-        public UpdateProductCommandHandler(IMapper mapper, StoreContext context, ErrorResultHandler errorResultHandler)
+        public UpdateProductCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
             _context = context;
-            _errorResultHandler = errorResultHandler;
         }
 
         public async Task<Result<ProductDto>> Handle(

@@ -1,4 +1,4 @@
-﻿namespace web_store_server.Domain.Dtos.Product
+﻿namespace web_store_server.Domain.Dtos.Products
 {
     public class ProductDto
     {

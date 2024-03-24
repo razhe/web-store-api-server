@@ -6,7 +6,7 @@ using web_store_server.Domain.Dtos.Accounts;
 using web_store_server.Domain.Services.Account;
 using web_store_server.Persistence.Database;
 
-namespace web_store_server.Features.Account.Commands
+namespace web_store_server.Features.Accounts.Commands
 {
     public record AuthorizationCommand(GetAuthorizationDto AuthorizationRequest) :
         IRequest<Result<CreateAuthorizationDto>>;

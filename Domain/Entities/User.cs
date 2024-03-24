@@ -9,7 +9,6 @@ namespace web_store_server.Domain.Entities
     {
         public User()
         {
-            Customers = new HashSet<Customer>();
             PasswordResets = new HashSet<PasswordReset>();
             Posts = new HashSet<Post>();
             UserOauthClientRequests = new HashSet<UserOauthClientRequest>();
@@ -25,7 +24,7 @@ namespace web_store_server.Domain.Entities
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
 
-        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual Customer Customer { get; set; }
         public virtual ICollection<PasswordReset> PasswordResets { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<UserOauthClientRequest> UserOauthClientRequests { get; set; }

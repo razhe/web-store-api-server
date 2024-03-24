@@ -10,7 +10,6 @@ namespace web_store_server.Domain.Entities
         public Order()
         {
             Deliveries = new HashSet<Delivery>();
-            Sales = new HashSet<Sale>();
         }
 
         public Guid Id { get; set; }
@@ -20,7 +19,7 @@ namespace web_store_server.Domain.Entities
         public DateTimeOffset CreatedAt { get; set; }
 
         public virtual Customer Customer { get; set; }
+        public virtual Sale Sale { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }
-        public virtual ICollection<Sale> Sales { get; set; }
     }
 }
