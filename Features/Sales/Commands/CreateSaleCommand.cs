@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using web_store_server.Common.Enums;
 using web_store_server.Common.Helpers;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Sales;
@@ -23,12 +24,31 @@ namespace web_store_server.Features.Sales.Commands
 
         public async Task<Result<bool>> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
+            var products = await _dbContext.Products
+                .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
+                .ToArrayAsync(cancellationToken);
+
+            foreach (var item in request.CreateSaleDto)
+            {
+                var product = products.Where(x => x.Id == item.ProductId).First();
+
+                try
+                {
+                    product.Stock -= item.Quantity;
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+
+                }
+            }
+
             Order order = new()
             {
                 Id = Guid.NewGuid(),
                 CustomerId = request.customerId,
                 OrderNumber = SaleHelpers.GenerateOrderNumber(),
-                Status = 0,
+                Status = (int)OrderEnums.Status.CREATED,
                 CreatedAt = DateTimeOffset.Now
             };
 
@@ -36,23 +56,8 @@ namespace web_store_server.Features.Sales.Commands
             {
                 Id = Guid.NewGuid(),
                 Order = order,
+                IncludeIva = true,
             };
-
-            foreach (var item in request.CreateSaleDto)
-            {
-                var product = await _dbContext.Products
-                    .AsNoTracking()
-                    .Where(x => x.Id == item.ProductId)
-                    .FirstAsync(cancellationToken);
-                try
-                {
-                    product.Stock -= item.Quantity;
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-
-                }
-            }
 
             throw new NotImplementedException();
         }

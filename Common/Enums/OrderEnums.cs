@@ -2,11 +2,11 @@
 {
     public class OrderEnums
     {
-        public enum OrderStatus : int
+        public enum Status : int
         {
             CREATED = 1,
-            ANULLED = 2,
-            VERIFIED = 3,
+            PENDING_PAYMENT = 2,
+            SUCCESSFULL_PAYMENT = 3,
         }
     }
 }
