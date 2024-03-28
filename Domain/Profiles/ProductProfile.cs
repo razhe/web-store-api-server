@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using web_store_server.Domain.Dtos.Product;
 using web_store_server.Domain.Dtos.Products;
 using web_store_server.Domain.Entities;
 

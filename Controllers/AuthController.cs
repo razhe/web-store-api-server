@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Accounts;
-using web_store_server.Features.Account.Commands;
+using web_store_server.Features.Accounts.Commands;
 
 namespace web_store_server.Controllers
 {
