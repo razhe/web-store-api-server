@@ -28,40 +28,48 @@ namespace web_store_server.Features.Sales.Commands
                 .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
                 .ToArrayAsync(cancellationToken);
 
-            foreach (var item in request.CreateSaleDto)
+            try
             {
-                var product = products.Where(x => x.Id == item.ProductId).First();
-
-                try
+                Order order = new()
                 {
+                    Id = Guid.NewGuid(),
+                    CustomerId = request.customerId,
+                    OrderNumber = SaleHelpers.GenerateOrderNumber(),
+                    Status = (int)OrderEnums.Status.CREATED,
+                    CreatedAt = DateTimeOffset.Now,
+                    Sale = new Sale()
+                    {
+                        Id = Guid.NewGuid(),
+                        Total = products.Select(x => x.Price).Sum(),
+                        CreatedAt = DateTimeOffset.Now,
+                        ProductSales = new List<ProductSale>()
+                    }
+                };
+
+                foreach (var item in request.CreateSaleDto)
+                {
+                    var product = products.Where(x => x.Id == item.ProductId).First();
+                    order.Sale.ProductSales.Add(new ProductSale()
+                    {
+                        Product = product,
+                        Sale = order.Sale,
+                        Quantity = item.Quantity,
+                        Subtotal = product.Price * item.Quantity,
+                        UnitPrice = product.Price,
+                    });
+
                     product.Stock -= item.Quantity;
-                    await _dbContext.SaveChangesAsync(cancellationToken);
                 }
-                catch (DbUpdateConcurrencyException ex)
-                {
 
-                }
+                await _dbContext.Orders.AddAsync(order, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+
             }
 
-            Order order = new()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = request.customerId,
-                OrderNumber = SaleHelpers.GenerateOrderNumber(),
-                Status = (int)OrderEnums.Status.CREATED,
-                CreatedAt = DateTimeOffset.Now
-            };
-
-            Sale sale = new()
-            {
-                Id = Guid.NewGuid(),
-                Order = order,
-                IncludeIva = true,
-                Total = ,
-                CreatedAt = DateTimeOffset.Now
-            };
-
-            throw new NotImplementedException();
+            return new Result<bool>(true);
         }
     }
 }
