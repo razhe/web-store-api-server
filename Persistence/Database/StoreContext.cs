@@ -641,13 +641,7 @@ namespace web_store_server.Persistence.Database
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("(sysdatetimeoffset())");
 
-                entity.Property(e => e.IncludeIva).HasColumnName("include_iva");
-
-                entity.Property(e => e.Iva).HasColumnName("iva");
-
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
-
-                entity.Property(e => e.Subtotal).HasColumnName("subtotal");
 
                 entity.Property(e => e.Total).HasColumnName("total");
 

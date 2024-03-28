@@ -14,10 +14,7 @@ namespace web_store_server.Domain.Entities
 
         public Guid Id { get; set; }
         public Guid OrderId { get; set; }
-        public int? Iva { get; set; }
-        public long Subtotal { get; set; }
         public long Total { get; set; }
-        public bool IncludeIva { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? VirifiedAt { get; set; }
 

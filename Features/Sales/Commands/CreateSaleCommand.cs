@@ -57,6 +57,8 @@ namespace web_store_server.Features.Sales.Commands
                 Id = Guid.NewGuid(),
                 Order = order,
                 IncludeIva = true,
+                Total = ,
+                CreatedAt = DateTimeOffset.Now
             };
 
             throw new NotImplementedException();
