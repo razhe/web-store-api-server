@@ -96,9 +96,12 @@ namespace web_store_server.Features.Sales.Commands
                                 return new Result<bool>("Error al intentar generar una venta con ese producto, intentalo nuevamente. Si el error persiste comunicate con soporte.");
                             }
 
-                            var databaseStock = (int)databaseValues["stock"]!;
+                            Guid databaseId = (Guid)databaseValues["id"]!;
+                            int databaseStock = (int)databaseValues["stock"]!;
 
-                            var stockDiff = databaseStock - currentValues.Stock;
+                            var requiredStock = request.CreateSaleDto.Where(x => x.ProductId == databaseId).Select(x => x.Quantity).First();
+
+                            int stockDiff = databaseStock - requiredStock;
 
                             if (stockDiff < 0)
                             {
