@@ -12,13 +12,12 @@ namespace web_store_server.Domain.Entities
             PasswordResets = new HashSet<PasswordReset>();
             Posts = new HashSet<Post>();
             UserOauthClientRequests = new HashSet<UserOauthClientRequest>();
+            UserOauthIdentities = new HashSet<UserOauthIdentity>();
         }
 
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int AccountOrigin { get; set; }
-        public int? ExternalAccountCode { get; set; }
         public int Role { get; set; }
         public bool Active { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
@@ -28,5 +27,6 @@ namespace web_store_server.Domain.Entities
         public virtual ICollection<PasswordReset> PasswordResets { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<UserOauthClientRequest> UserOauthClientRequests { get; set; }
+        public virtual ICollection<UserOauthIdentity> UserOauthIdentities { get; set; }
     }
 }

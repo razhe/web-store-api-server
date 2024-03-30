@@ -49,4 +49,8 @@
     <Folder Include="Features\Sales\Queries\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
+  </ItemGroup>
+
 </Project>

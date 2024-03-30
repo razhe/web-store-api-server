@@ -2,12 +2,10 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using web_store_server.Domain.Entities;
 
-namespace web_store_server.Persistence.Database
+namespace web_store_server.Domain.Entities
 {
     public partial class StoreContext : DbContext
     {
@@ -25,6 +23,7 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryType> DeliveryTypes { get; set; }
         public virtual DbSet<OauthClient> OauthClients { get; set; }
+        public virtual DbSet<OauthIdentityProvider> OauthIdentityProviders { get; set; }
         public virtual DbSet<Offer> Offers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<PasswordReset> PasswordResets { get; set; }
@@ -41,6 +40,7 @@ namespace web_store_server.Persistence.Database
         public virtual DbSet<Sale> Sales { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserOauthClientRequest> UserOauthClientRequests { get; set; }
+        public virtual DbSet<UserOauthIdentity> UserOauthIdentities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -211,6 +211,26 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.RedirectUri)
                     .HasMaxLength(500)
                     .HasColumnName("redirect_uri");
+            });
+
+            modelBuilder.Entity<OauthIdentityProvider>(entity =>
+            {
+                entity.ToTable("oauth_identity_providers");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ClientId)
+                    .IsRequired()
+                    .HasColumnName("client_id");
+
+                entity.Property(e => e.ClientSecret).HasColumnName("client_secret");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
             });
 
             modelBuilder.Entity<Offer>(entity =>
@@ -438,7 +458,7 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.SubcategoryId).HasColumnName("subcategory_id");
 
-                entity.Property(e => e.Tags).HasColumnName("tags").HasJsonConversion();
+                entity.Property(e => e.Tags).HasColumnName("tags");
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
@@ -662,8 +682,6 @@ namespace web_store_server.Persistence.Database
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.AccountOrigin).HasColumnName("account_origin");
-
                 entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.CreatedAt)
@@ -673,8 +691,6 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasColumnName("email");
-
-                entity.Property(e => e.ExternalAccountCode).HasColumnName("external_account_code");
 
                 entity.Property(e => e.Password).HasColumnName("password");
 
@@ -722,6 +738,37 @@ namespace web_store_server.Persistence.Database
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_user_oauth_request_users");
+            });
+
+            modelBuilder.Entity<UserOauthIdentity>(entity =>
+            {
+                entity.ToTable("user_oauth_identity");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AccountCode)
+                    .IsRequired()
+                    .HasColumnName("account_code");
+
+                entity.Property(e => e.ProviderId).HasColumnName("provider_id");
+
+                entity.Property(e => e.ProviderToken)
+                    .IsRequired()
+                    .HasColumnName("provider_token");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Provider)
+                    .WithMany(p => p.UserOauthIdentities)
+                    .HasForeignKey(d => d.ProviderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_identity_oauth_identity_providers");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserOauthIdentities)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_user_oauth_identity_users");
             });
 
             OnModelCreatingPartial(modelBuilder);

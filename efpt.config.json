@@ -2,7 +2,6 @@
    "CodeGenerationMode": 2,
    "ContextClassName": "StoreContext",
    "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
@@ -33,6 +32,10 @@
       },
       {
          "Name": "[dbo].[oauth_clients]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[oauth_identity_providers]",
          "ObjectType": 0
       },
       {
@@ -96,11 +99,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[user_oauth_identity]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[users]",
          "ObjectType": 0
       }
    ],
-   "UiHint": "gvstv.web_store.dbo",
+   "UiHint": null,
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
