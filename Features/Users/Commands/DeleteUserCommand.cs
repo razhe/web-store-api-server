@@ -5,7 +5,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Users.Commands
 {
-    public record DeleteUserCommand(Guid userId) : IRequest<Result<bool>>;
+    public record DeleteUserCommand(Guid UserId) : IRequest<Result<bool>>;
 
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Result<bool>>
     {
@@ -22,7 +22,7 @@ namespace web_store_server.Features.Users.Commands
             {
                 var user = await _context
                     .Users
-                    .Where(x => x.Id == request.userId)
+                    .Where(x => x.Id == request.UserId)
                     .FirstOrDefaultAsync(cancellationToken);
 
                 if (user is null)

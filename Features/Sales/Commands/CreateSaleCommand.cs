@@ -10,7 +10,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Sales.Commands
 {
-    public record CreateSaleCommand(IEnumerable<CreateSaleDto> CreateSaleDto, Guid customerId) : 
+    public record CreateSaleCommand(IEnumerable<CreateSaleDto> CreateSaleDto, Guid CustomerId) : 
         IRequest<Result<bool>>;
 
     public class CreateSaleCommandHandler :
@@ -32,7 +32,7 @@ namespace web_store_server.Features.Sales.Commands
             Order order = new()
             {
                 Id = Guid.NewGuid(),
-                CustomerId = request.customerId,
+                CustomerId = request.CustomerId,
                 OrderNumber = SaleHelpers.GenerateOrderNumber(),
                 Status = (int)OrderEnums.Status.CREATED,
                 CreatedAt = DateTimeOffset.Now,

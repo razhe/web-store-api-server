@@ -9,9 +9,9 @@ using web_store_server.Persistence.Database;
 namespace web_store_server.Features.Users.Queries
 {
     public record GetUsersQuery : 
-        IRequest<Result<IEnumerable<UserDto>>>;
+        IRequest<Result<IEnumerable<GetUserDto>>>;
 
-    public class GetUsersQueryHanlder : IRequestHandler<GetUsersQuery, Result<IEnumerable<UserDto>>>
+    public class GetUsersQueryHanlder : IRequestHandler<GetUsersQuery, Result<IEnumerable<GetUserDto>>>
     {
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ namespace web_store_server.Features.Users.Queries
             _mapper = mapper;
         }
 
-        public async Task<Result<IEnumerable<UserDto>>> Handle(
+        public async Task<Result<IEnumerable<GetUserDto>>> Handle(
             GetUsersQuery request,
             CancellationToken cancellationToken)
         {
@@ -30,9 +30,9 @@ namespace web_store_server.Features.Users.Queries
             {
                 var response = await _context.Users
                     .Where(x => !x.IsDeleted)
-                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<GetUserDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
-                return new Result<IEnumerable<UserDto>>(response);
+                return new Result<IEnumerable<GetUserDto>>(response);
             }
             catch
             {

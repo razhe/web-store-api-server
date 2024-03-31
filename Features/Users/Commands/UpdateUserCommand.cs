@@ -7,7 +7,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Users.Commands
 {
-    public record UpdateUserCommand(UserDto UserDto, Guid userId) : IRequest<Result<UserDto>>;
+    public record UpdateUserCommand(UserDto UserDto, Guid UserId) : IRequest<Result<UserDto>>;
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<UserDto>>
     {
@@ -26,7 +26,7 @@ namespace web_store_server.Features.Users.Commands
             {
                 var user = await _context
                     .Users
-                    .Where(x => x.Id == request.userId)
+                    .Where(x => x.Id == request.UserId)
                     .FirstOrDefaultAsync(cancellationToken);
 
                 if (user is null)

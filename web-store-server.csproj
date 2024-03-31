@@ -45,6 +45,9 @@
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Features\Accounts\Queries\" />
+    <Folder Include="Features\Subcategories\Commands\" />
+    <Folder Include="Features\Subcategories\Queries\" />
+    <Folder Include="Features\Subcategories\" />
     <Folder Include="Features\Sales\Queries\" />
   </ItemGroup>
 

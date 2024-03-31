@@ -9,7 +9,8 @@ namespace web_store_server.Domain.Profiles
     {
         public UserProfile() 
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, GetUserDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }

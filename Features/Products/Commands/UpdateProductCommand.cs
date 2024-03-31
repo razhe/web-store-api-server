@@ -7,7 +7,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Commands
 {
-    public record UpdateProductCommand(UpdateProductDto UpdateProductDto, Guid productId) : 
+    public record UpdateProductCommand(UpdateProductDto UpdateProductDto, Guid ProductId) : 
         IRequest<Result<ProductDto>>;
 
     public class UpdateProductCommandHandler :
@@ -30,7 +30,7 @@ namespace web_store_mvc.Features.Products.Commands
             {
                 var product = await _context
                 .Products
-                .Where(x => x.Id == request.productId)
+                .Where(x => x.Id == request.ProductId)
                 .FirstOrDefaultAsync(token);
 
                 if (product is null)
