@@ -3,7 +3,6 @@
     public class ReportDto
     {
         public string OrderNumber { get; set; } = null!;
-        public string PaymentMethod { get; set; } = null!;
         public DateTimeOffset RegisterDate { get; set; }
         public string TotalSale { get; set; } = null!;
         public string Product { get; set; } = null!;
