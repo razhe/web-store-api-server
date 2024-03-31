@@ -683,6 +683,10 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.Active).HasColumnName("active");
 
+                entity.Property(e => e.IsDeleted)
+                    .HasColumnName("is_deleted")
+                    .HasDefaultValue(0);
+
                 entity.Property(e => e.CreatedAt)
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("(sysdatetimeoffset())");
@@ -696,6 +700,7 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             });
 
             modelBuilder.Entity<UserOauthClientRequest>(entity =>

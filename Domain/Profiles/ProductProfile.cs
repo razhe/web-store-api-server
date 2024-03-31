@@ -4,10 +4,10 @@ using web_store_server.Domain.Entities;
 
 namespace web_store_server.Domain.Profiles
 {
-    public class AdminProfile :
+    public class ProductProfile :
         Profile
     {
-        public AdminProfile()
+        public ProductProfile()
         {
             CreateMap<Product, ProductDto>();
 

@@ -29,7 +29,7 @@ namespace web_store_mvc.Features.Products.Queries
         {
             var response = await _context
                 .Products
-                .Where(p => p.DeletedAt == null)
+                .Where(p => !p.IsDeleted)
                 .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).ToArrayAsync(token);
 
             return new Result<IEnumerable<GetProductDto>>(response);

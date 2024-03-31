@@ -20,8 +20,10 @@ namespace web_store_server.Domain.Entities
         public string Password { get; set; }
         public int Role { get; set; }
         public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
 
         public virtual Customer Customer { get; set; }
         public virtual ICollection<PasswordReset> PasswordResets { get; set; }
