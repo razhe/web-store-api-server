@@ -25,12 +25,19 @@ namespace web_store_mvc.Features.Products.Commands
             CreateProductCommand request, 
             CancellationToken token)
         {
-            Product product = _mapper.Map<CreateProductDto, Product>(request.CreateProductDto);
+            try
+            {
+                Product product = _mapper.Map<CreateProductDto, Product>(request.CreateProductDto);
 
-            _context.Add(product);
-            await _context.SaveChangesAsync(token);
+                _context.Add(product);
+                await _context.SaveChangesAsync(token);
 
-            return;
+                return;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

@@ -22,22 +22,29 @@ namespace web_store_mvc.Features.Products.Commands
             DeleteProductCommand request,
             CancellationToken token)
         {
-            var product = await _context
+            try
+            {
+                var product = await _context
                 .Products
                 .Where(x => x.Id == request.ProductId)
                 .FirstOrDefaultAsync(token);
 
-            if (product is null)
-            {
-                return new Result<bool>("No se ha encontrado un producto con ese identificador.");
+                if (product is null)
+                {
+                    return new Result<bool>("No se ha encontrado un producto con ese identificador.");
+                }
+
+                product.Active = false;
+                product.DeletedAt = DateTimeOffset.Now;
+
+                await _context.SaveChangesAsync(token);
+
+                return new Result<bool>(true);
             }
-
-            product.Active = false;
-            product.DeletedAt = DateTimeOffset.Now;
-
-            await _context.SaveChangesAsync(token);
-
-            return new Result<bool>(true);
+            catch
+            {
+                throw;
+            }
         }
     }
 }

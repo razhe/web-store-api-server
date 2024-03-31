@@ -26,22 +26,29 @@ namespace web_store_mvc.Features.Products.Commands
             UpdateProductCommand request, 
             CancellationToken token)
         {
-            var product = await _context
+            try
+            {
+                var product = await _context
                 .Products
                 .Where(x => x.Id == request.productId)
                 .FirstOrDefaultAsync(token);
 
-            if (product is null)
-            {
-                return new Result<ProductDto>("No se ha encontrado un producto con ese identificador.");
+                if (product is null)
+                {
+                    return new Result<ProductDto>("No se ha encontrado un producto con ese identificador.");
+                }
+
+                request.UpdateProductDto.MapToModel(product);
+                await _context.SaveChangesAsync(token);
+
+                ProductDto productUpdated = _mapper.Map<ProductDto>(product);
+
+                return new Result<ProductDto>(productUpdated);
             }
-
-            request.UpdateProductDto.MapToModel(product);
-            await _context.SaveChangesAsync(token);
-
-            ProductDto productUpdated = _mapper.Map<ProductDto>(product);
-
-            return new Result<ProductDto>(productUpdated);
+            catch
+            {
+                throw;
+            }
         }
     }
 }

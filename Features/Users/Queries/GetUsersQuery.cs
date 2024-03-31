@@ -26,11 +26,18 @@ namespace web_store_server.Features.Users.Queries
             GetUsersQuery request,
             CancellationToken cancellationToken)
         {
-            var response = await _context.Users
-                .Where(x => !x.IsDeleted)
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+            try
+            {
+                var response = await _context.Users
+                    .Where(x => !x.IsDeleted)
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
-            return new Result<IEnumerable<UserDto>>(response);
+                return new Result<IEnumerable<UserDto>>(response);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

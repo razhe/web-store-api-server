@@ -22,20 +22,27 @@ namespace web_store_server.Features.Users.Commands
 
         public async Task<Result<UserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _context
-                .Users  
-                .Where(x => x.Id == request.userId)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (user is null)
+            try
             {
-                return new Result<UserDto>("No se ha encontrado un usuario con ese identificador.");
+                var user = await _context
+                    .Users
+                    .Where(x => x.Id == request.userId)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (user is null)
+                {
+                    return new Result<UserDto>("No se ha encontrado un usuario con ese identificador.");
+                }
+
+                request.UserDto.MapToModel(user);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return new Result<UserDto>(request.UserDto);
             }
-
-            request.UserDto.MapToModel(user);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return new Result<UserDto>(request.UserDto);
+            catch
+            {
+                throw;
+            }
         }
     }
 }

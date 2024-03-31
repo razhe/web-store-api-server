@@ -23,10 +23,17 @@ namespace web_store_server.Features.Users.Commands
 
         public async Task<Result<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            User user = _mapper.Map<UserDto, User>(request.UserDto);
-            _context.Add(user);
+            try
+            {
+                User user = _mapper.Map<UserDto, User>(request.UserDto);
+                await _context.AddAsync(user, cancellationToken);
 
-            return new Result<UserDto>(request.UserDto);
+                return new Result<UserDto>(request.UserDto);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

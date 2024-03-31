@@ -27,12 +27,19 @@ namespace web_store_mvc.Features.Products.Queries
             GetProductsQuery request,
             CancellationToken token)
         {
-            var response = await _context
-                .Products
-                .Where(p => !p.IsDeleted)
-                .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).ToArrayAsync(token);
+            try
+            {
+                var response = await _context
+                    .Products
+                    .Where(p => !p.IsDeleted)
+                    .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).ToArrayAsync(token);
 
-            return new Result<IEnumerable<GetProductDto>>(response);
+                return new Result<IEnumerable<GetProductDto>>(response);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
