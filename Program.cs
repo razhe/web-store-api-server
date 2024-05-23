@@ -97,6 +97,17 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 
+// Migrar base de datos para crearla
+/*
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<StoreContext>();
+    dbContext.Database.Migrate();
+}
+*/
+
+// ejecutar este comando en la consola: Add-Migration InitDB
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

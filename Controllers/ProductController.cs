@@ -16,12 +16,12 @@ namespace web_store_server.Controllers
     public class ProductController : ControllerBase
     {
         private readonly ISender _sender;
-        private readonly ErrorResultHandler __errorResultHandler;
+        private readonly ErrorResultHandler _errorResultHandler;
 
         public ProductController(ISender sender, ErrorResultHandler errorResultHandler)
         {
             _sender = sender;
-            __errorResultHandler = errorResultHandler;
+            _errorResultHandler = errorResultHandler;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace web_store_server.Controllers
                 
             return result.IsSuccess ?
                 Ok(result.Data) :
-                __errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
 
         [HttpDelete("{id:Guid}")]
@@ -96,7 +96,7 @@ namespace web_store_server.Controllers
 
             return result.IsSuccess ?
                 Ok() :
-                __errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
     }
 }
