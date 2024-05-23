@@ -36,7 +36,7 @@ namespace web_store_server.Domain.Profiles
 
             #region Subcategories
 
-            CreateMap<SubcategoryDto, ProductSubcategory>();
+            CreateMap<CreateUpdateSubcategoryDto, ProductSubcategory>();
             CreateMap<ProductSubcategory, SubcategoryDto>();
 
             #endregion

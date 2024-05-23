@@ -2,10 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Categories;
-using web_store_server.Domain.Dtos.Products;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Queries
@@ -30,7 +28,8 @@ namespace web_store_server.Features.Categories.Queries
                 var response = await _context
                     .ProductCategories
                     .Where(p => !p.IsDeleted)
-                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                    .ToArrayAsync(cancellationToken);
 
                 return new Result<IEnumerable<CategoryDto>>(response);
             }
