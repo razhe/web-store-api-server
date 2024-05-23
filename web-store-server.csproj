@@ -19,6 +19,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\Exceptions\**" />
+    <Content Remove="Common\Exceptions\**" />
+    <EmbeddedResource Remove="Common\Exceptions\**" />
+    <None Remove="Common\Exceptions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="EntityFrameworkCore.SqlServer.JsonExtention" Version="2.0.0" />
@@ -43,11 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Exceptions\" />
     <Folder Include="Features\Accounts\Queries\" />
-    <Folder Include="Features\Subcategories\Commands\" />
-    <Folder Include="Features\Subcategories\Queries\" />
-    <Folder Include="Features\Subcategories\" />
     <Folder Include="Features\Sales\Queries\" />
   </ItemGroup>
 

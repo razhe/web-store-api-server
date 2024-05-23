@@ -9,8 +9,8 @@ namespace web_store_server.Domain.Profiles
     {
         public UserProfile() 
         {
-            CreateMap<User, GetUserDto>();
             CreateMap<User, UserDto>();
+            CreateMap<User, CreateUpdateUserDto>();
         }
     }
 }

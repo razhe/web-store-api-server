@@ -21,7 +21,7 @@ namespace web_store_server.Domain.Profiles
                 .ForMember(dest =>
                     dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name));
 
-            CreateMap<CreateProductDto, Product>()
+            CreateMap<CreateUpdateProductDto, Product>()
                 .ForMember(dest =>
                     dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
 
@@ -29,21 +29,17 @@ namespace web_store_server.Domain.Profiles
 
             #region Categories
 
-            CreateMap<ProductCategoryDto, ProductCategory>();
-            CreateMap<ProductCategory, GetProductCategoryDto>().ReverseMap();
+            CreateMap<CreateUpdateCategoryDto, ProductCategory>();
+            CreateMap<ProductCategory, CategoryDto>().ReverseMap();
 
             #endregion
+
             #region Subcategories
 
-            CreateMap<ProductSubcategoryDto, ProductSubcategory>();
-            CreateMap<ProductSubcategory, GetProductSubcategoryDto>();
+            CreateMap<SubcategoryDto, ProductSubcategory>();
+            CreateMap<ProductSubcategory, SubcategoryDto>();
 
             #endregion
-
-
-
-
-
         }
     }
 }

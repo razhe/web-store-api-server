@@ -60,7 +60,7 @@ namespace web_store_server.Controllers
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateProduct(
-            CreateProductDto request,
+            CreateUpdateProductDto request,
             CancellationToken token)
         {
             await _sender.Send(new CreateProductCommand(request), token);
@@ -77,7 +77,7 @@ namespace web_store_server.Controllers
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateProduct(
             [FromRoute] Guid id,
-            [FromBody] UpdateProductDto updateProductDto,
+            [FromBody] CreateUpdateProductDto updateProductDto,
             CancellationToken token)
         {
             var result = await _sender.Send(new UpdateProductCommand(updateProductDto, id), token);

@@ -1,6 +1,6 @@
 ﻿namespace web_store_server.Domain.Dtos.Categories
 {
-    public class GetProductCategoryDto
+    public class CategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;

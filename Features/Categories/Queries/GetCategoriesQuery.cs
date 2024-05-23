@@ -10,9 +10,9 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Queries
 {
-    public record GetCategoriesQuery : IRequest<Result<IEnumerable<GetProductCategoryDto>>>;
+    public record GetCategoriesQuery : IRequest<Result<IEnumerable<CategoryDto>>>;
 
-    public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Result<IEnumerable<GetProductCategoryDto>>>
+    public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Result<IEnumerable<CategoryDto>>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
@@ -23,16 +23,16 @@ namespace web_store_server.Features.Categories.Queries
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<GetProductCategoryDto>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<CategoryDto>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var response = await _context
                     .ProductCategories
                     .Where(p => !p.IsDeleted)
-                    .ProjectTo<GetProductCategoryDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
-                return new Result<IEnumerable<GetProductCategoryDto>>(response);
+                return new Result<IEnumerable<CategoryDto>>(response);
             }
             catch
             {

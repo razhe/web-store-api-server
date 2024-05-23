@@ -7,10 +7,10 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Users.Commands
 {
-    public record CreateUserCommand(UserDto UserDto) : 
-        IRequest<Result<UserDto>>;
+    public record CreateUserCommand(CreateUpdateUserDto UserDto) : 
+        IRequest<Result<CreateUpdateUserDto>>;
 
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<UserDto>>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<CreateUpdateUserDto>>
     {
         private readonly StoreContext _context;
         private readonly IMapper _mapper;
@@ -21,14 +21,14 @@ namespace web_store_server.Features.Users.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CreateUpdateUserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                User user = _mapper.Map<UserDto, User>(request.UserDto);
+                User user = _mapper.Map<CreateUpdateUserDto, User>(request.UserDto);
                 await _context.AddAsync(user, cancellationToken);
 
-                return new Result<UserDto>(request.UserDto);
+                return new Result<CreateUpdateUserDto>(request.UserDto);
             }
             catch
             {

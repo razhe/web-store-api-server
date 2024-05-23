@@ -1,6 +1,6 @@
 ﻿namespace web_store_server.Domain.Dtos.Subcategories
 {
-    public class GetProductSubcategoryDto
+    public class SubcategoryDto
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }

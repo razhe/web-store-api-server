@@ -2,7 +2,7 @@
 
 namespace web_store_server.Domain.Dtos.Categories
 {
-    public class ProductCategoryDto
+    public class CreateUpdateCategoryDto
     {
         public string Name { get; set; } = null!;
         public bool Active { get; set; }

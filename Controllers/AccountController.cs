@@ -8,12 +8,12 @@ namespace web_store_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly ISender _sender;
         private readonly ApiResponseHandler _errorResultHandler;
 
-        public AuthController(ISender sender, ApiResponseHandler errorResultHandler)
+        public AccountController(ISender sender, ApiResponseHandler errorResultHandler)
         {
             _sender = sender;
             _errorResultHandler = errorResultHandler;

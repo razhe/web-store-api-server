@@ -6,7 +6,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Commands
 {
-    public record CreateProductCommand(CreateProductDto CreateProductDto) 
+    public record CreateProductCommand(CreateUpdateProductDto Product) 
         : IRequest;
 
     public class CreateProductCommandHandler : 
@@ -27,7 +27,7 @@ namespace web_store_mvc.Features.Products.Commands
         {
             try
             {
-                Product product = _mapper.Map<CreateProductDto, Product>(request.CreateProductDto);
+                Product product = _mapper.Map<CreateUpdateProductDto, Product>(request.Product);
 
                 _context.Add(product);
                 await _context.SaveChangesAsync(token);

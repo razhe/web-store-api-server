@@ -1,6 +1,6 @@
 ﻿namespace web_store_server.Domain.Dtos.Products
 {
-    public class UpdateProductDto
+    public class CreateUpdateProductDto
     {
         public int SubcategoryId { get; set; }
         public int BrandId { get; set; }
@@ -25,7 +25,6 @@
             p.Slug = Slug;
             p.Tags = Tags;
             p.Active = Active;
-            //p.UpdatedAt = DateTimeOffset.Now;
         }
     }
 }

@@ -6,7 +6,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Commands
 {
-    public record CreateCategoryCommand(ProductCategoryDto ProductCategoryDto) : IRequest;
+    public record CreateCategoryCommand(CreateUpdateCategoryDto ProductCategoryDto) : IRequest;
 
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
     {
@@ -23,7 +23,7 @@ namespace web_store_server.Features.Categories.Commands
         {
             try
             {
-                ProductCategory productCategory = _mapper.Map<ProductCategoryDto, ProductCategory>(request.ProductCategoryDto);
+                ProductCategory productCategory = _mapper.Map<CreateUpdateCategoryDto, ProductCategory>(request.ProductCategoryDto);
 
                 _context.Add(productCategory);
                 await _context.SaveChangesAsync(cancellationToken);

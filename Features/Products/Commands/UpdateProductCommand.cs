@@ -7,7 +7,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_mvc.Features.Products.Commands
 {
-    public record UpdateProductCommand(UpdateProductDto UpdateProductDto, Guid ProductId) : 
+    public record UpdateProductCommand(CreateUpdateProductDto Product, Guid ProductId) : 
         IRequest<Result<ProductDto>>;
 
     public class UpdateProductCommandHandler :
@@ -38,7 +38,7 @@ namespace web_store_mvc.Features.Products.Commands
                     return new Result<ProductDto>("No se ha encontrado un producto con ese identificador.");
                 }
 
-                request.UpdateProductDto.MapToModel(product);
+                request.Product.MapToModel(product);
                 await _context.SaveChangesAsync(token);
 
                 ProductDto productUpdated = _mapper.Map<ProductDto>(product);

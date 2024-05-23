@@ -9,10 +9,10 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Commands
 {
-    public record UpdateCategoryCommand(ProductCategoryDto ProductCategoryDto, int CategoryId) : 
-        IRequest<Result<GetProductCategoryDto>>;
+    public record UpdateCategoryCommand(CreateUpdateCategoryDto ProductCategoryDto, int CategoryId) : 
+        IRequest<Result<CategoryDto>>;
 
-    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result<GetProductCategoryDto>>
+    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result<CategoryDto>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
@@ -23,7 +23,7 @@ namespace web_store_server.Features.Categories.Commands
             _context = context;
         }
 
-        public async Task<Result<GetProductCategoryDto>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CategoryDto>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,15 +34,15 @@ namespace web_store_server.Features.Categories.Commands
 
                 if (productCategory is null)
                 {
-                    return new Result<GetProductCategoryDto>("No se ha encontrado una categoría con ese identificador.");
+                    return new Result<CategoryDto>("No se ha encontrado una categoría con ese identificador.");
                 }
 
                 request.ProductCategoryDto.MapToModel(productCategory);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                GetProductCategoryDto categoryUpdated = _mapper.Map<GetProductCategoryDto>(productCategory);
+                CategoryDto categoryUpdated = _mapper.Map<CategoryDto>(productCategory);
 
-                return new Result<GetProductCategoryDto>(categoryUpdated);
+                return new Result<CategoryDto>(categoryUpdated);
             }
             catch
             {

@@ -7,9 +7,9 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Users.Commands
 {
-    public record UpdateUserCommand(UserDto UserDto, Guid UserId) : IRequest<Result<UserDto>>;
+    public record UpdateUserCommand(CreateUpdateUserDto UserDto, Guid UserId) : IRequest<Result<CreateUpdateUserDto>>;
 
-    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<UserDto>>
+    public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<CreateUpdateUserDto>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _context;
@@ -20,7 +20,7 @@ namespace web_store_server.Features.Users.Commands
             _context = context;
         }
 
-        public async Task<Result<UserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CreateUpdateUserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -31,13 +31,13 @@ namespace web_store_server.Features.Users.Commands
 
                 if (user is null)
                 {
-                    return new Result<UserDto>("No se ha encontrado un usuario con ese identificador.");
+                    return new Result<CreateUpdateUserDto>("No se ha encontrado un usuario con ese identificador.");
                 }
 
                 request.UserDto.MapToModel(user);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return new Result<UserDto>(request.UserDto);
+                return new Result<CreateUpdateUserDto>(request.UserDto);
             }
             catch
             {
