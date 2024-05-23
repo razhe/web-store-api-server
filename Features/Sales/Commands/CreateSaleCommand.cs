@@ -68,6 +68,30 @@ namespace web_store_server.Features.Sales.Commands
 
             await _dbContext.Orders.AddAsync(order, cancellationToken);
 
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException cex)
+            {
+                foreach (var entry in cex.Entries)
+                {
+                    if (entry.Entity is Product)
+                    {
+                        using var transaction = _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+                        var dbValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+                        var currValues = entry.CurrentValues;
+
+                        foreach (var property in currValues.Properties)
+                        {
+                            var proposedValue = currValues[property];
+                            var databaseValue = dbValues![property];
+                        }
+                    }
+                }
+            }
+
             int attempts = 0;
             bool isSaved = false;
 
