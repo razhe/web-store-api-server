@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using web_store_server.Domain.Entities.Interfaces;
 
 namespace web_store_server.Domain.Entities
@@ -27,7 +28,9 @@ namespace web_store_server.Domain.Entities
         public List<string> Tags { get; set; }
         public bool Active { get; set; }
         public bool IsDeleted { get; set; }
+
         public DateTimeOffset CreatedAt { get; set; }
+        [ConcurrencyCheck]
         public DateTimeOffset? UpdatedAt { get; set; }
         public DateTimeOffset? DeletedAt { get; set; }
 

@@ -10,7 +10,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Sales.Commands
 {
-    public record CreateSaleCommand(IEnumerable<CreateSaleDto> CreateSaleDto, Guid CustomerId) : 
+    public record CreateSaleCommand(IEnumerable<CreateSaleDto> CreateSaleDto, Guid UserId) : 
         IRequest<Result<bool>>;
 
     public class CreateSaleCommandHandler :
@@ -29,10 +29,14 @@ namespace web_store_server.Features.Sales.Commands
                 .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
                 .ToArrayAsync(cancellationToken);
 
+            var customerId = await _dbContext.Customers.Where(x => x.UserId == request.UserId)
+                .Select(x => x.Id)
+                .FirstAsync(cancellationToken);
+
             Order order = new()
             {
                 Id = Guid.NewGuid(),
-                CustomerId = request.CustomerId,
+                CustomerId = customerId,
                 OrderNumber = SaleHelpers.GenerateOrderNumber(),
                 Status = (int)OrderEnums.Status.CREATED,
                 CreatedAt = DateTimeOffset.Now,
@@ -78,79 +82,33 @@ namespace web_store_server.Features.Sales.Commands
                 {
                     if (entry.Entity is Product)
                     {
-                        using var transaction = _dbContext.Database.BeginTransactionAsync(cancellationToken);
+                        using var transaction = _dbContext.Database.BeginTransaction();
 
                         var dbValues = await entry.GetDatabaseValuesAsync(cancellationToken);
                         var currValues = entry.CurrentValues;
 
-                        foreach (var property in currValues.Properties)
+                        var dbStock = (int)dbValues!["Stock"]!;
+
+                        var requiredStock = request.CreateSaleDto.Sum(x => x.Quantity);
+                        var diffStock = dbStock - requiredStock;
+
+                        if (diffStock < 0)
                         {
-                            var proposedValue = currValues[property];
-                            var databaseValue = dbValues![property];
+                            return new Result<bool>("Error al intentar realizar la compra. El stock disponible de uno de los productos es menor al deseado.");
                         }
+
+                        dbValues["Stock"] = diffStock;
+                        entry.OriginalValues.SetValues(dbValues);
+
+                        await _dbContext.SaveChangesAsync(cancellationToken);
+                        transaction.Commit();
                     }
-                }
-            }
-
-            int attempts = 0;
-            bool isSaved = false;
-
-            while (attempts <= 2 || isSaved)
-            {
-                try
-                {
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-                    isSaved = true;
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    foreach (var entry in ex.Entries)
+                    else
                     {
-                        if (entry.Entity is Product)
-                        {
-                            /* Se podría considerar usar transacciones para garantizar que en el segundo intento
-                            no se alteren los datos. Así combinamos ambas funcionalidades y nos beneficiamos de ambas ventajas
-                            tambien podriamos omitir el bucle While. */
-
-                            var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
-                            var currentValues = (Product)entry.Entity;
-
-                            if (databaseValues is null)
-                            {
-                                return new Result<bool>("Error al intentar generar una venta con ese producto, intentalo nuevamente. Si el error persiste comunicate con soporte.");
-                            }
-
-                            Guid databaseId = (Guid)databaseValues["id"]!;
-                            int databaseStock = (int)databaseValues["stock"]!;
-
-                            var requiredStock = request.CreateSaleDto.Where(x => x.ProductId == databaseId).Select(x => x.Quantity).First();
-
-                            int stockDiff = databaseStock - requiredStock;
-
-                            if (stockDiff < 0)
-                            {
-                                return new Result<bool>("Error al intentar realizar la compra. El stock de uno de los productos es menor al deseado.");
-                            }
-                            else
-                            {
-                                currentValues.Stock = stockDiff;
-                                entry.CurrentValues.SetValues(currentValues);
-
-                                await _dbContext.SaveChangesAsync(cancellationToken);
-                            }
-                        }
+                        return new Result<bool>("Ha ocurrido un error inesperado al momento de realizar su compra. Por favor, recargue la página y si el error persiste, contactese con soporte.");
                     }
-
-                    isSaved = true;
                 }
-                attempts++;
             }
-
-            if (!isSaved) 
-            {
-                return new Result<bool>("Error al procesar la compra, vacíe el carrito e inténtelo nuevamente.");
-            }
-
             return new Result<bool>(true);
         }
     }
