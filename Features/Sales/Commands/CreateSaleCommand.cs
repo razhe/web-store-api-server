@@ -76,7 +76,7 @@ namespace web_store_server.Features.Sales.Commands
             {
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException cex)
+            catch (DbUpdateConcurrencyException cex) // Manejando error de concurrencia
             {
                 foreach (var entry in cex.Entries)
                 {

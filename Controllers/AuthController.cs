@@ -11,9 +11,9 @@ namespace web_store_server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ISender _sender;
-        private readonly ErrorResultHandler _errorResultHandler;
+        private readonly ApiResponseHandler _errorResultHandler;
 
-        public AuthController(ISender sender, ErrorResultHandler errorResultHandler)
+        public AuthController(ISender sender, ApiResponseHandler errorResultHandler)
         {
             _sender = sender;
             _errorResultHandler = errorResultHandler;

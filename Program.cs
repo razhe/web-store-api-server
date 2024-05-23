@@ -54,7 +54,7 @@ builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(typeof(Program
 builder.Services.AddScoped<GobalExceptionHandlerMiddleware>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddTransient<ErrorResultHandler>();
+builder.Services.AddTransient<ApiResponseHandler>();
 /*
  * Database
  */

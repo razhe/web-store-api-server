@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace web_store_server.Domain.Communication
 {
-    public class ErrorResultHandler
+    public class ApiResponseHandler
     {
         private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public ErrorResultHandler(ProblemDetailsFactory problemDetailsFactory)
+        public ApiResponseHandler(ProblemDetailsFactory problemDetailsFactory)
         {
             _problemDetailsFactory = problemDetailsFactory;
         }

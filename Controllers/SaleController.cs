@@ -14,9 +14,9 @@ namespace web_store_server.Controllers
     public class SaleController : ControllerBase
     {
         private readonly ISender _sender;
-        private readonly ErrorResultHandler _errorResultHandler;
+        private readonly ApiResponseHandler _errorResultHandler;
 
-        public SaleController(ISender sender, ErrorResultHandler errorResultHandler)
+        public SaleController(ISender sender, ApiResponseHandler errorResultHandler)
         {
             _sender = sender;
             _errorResultHandler = errorResultHandler;
