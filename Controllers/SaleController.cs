@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using web_store_server.Domain.Communication;
@@ -10,6 +10,7 @@ namespace web_store_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SaleController : ControllerBase
     {
         private readonly ISender _sender;
@@ -30,7 +31,7 @@ namespace web_store_server.Controllers
             IEnumerable<CreateSaleDto> sales,
             CancellationToken token)
         {
-            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
             var result = await _sender.Send(new CreateSaleCommand(sales, userId), token);
 
