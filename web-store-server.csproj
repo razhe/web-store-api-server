@@ -21,16 +21,12 @@
   <ItemGroup>
     <Compile Remove="Common\Exceptions\**" />
     <Compile Remove="Features\Accounts\Queries\**" />
-    <Compile Remove="Features\Sales\Queries\**" />
     <Content Remove="Common\Exceptions\**" />
     <Content Remove="Features\Accounts\Queries\**" />
-    <Content Remove="Features\Sales\Queries\**" />
     <EmbeddedResource Remove="Common\Exceptions\**" />
     <EmbeddedResource Remove="Features\Accounts\Queries\**" />
-    <EmbeddedResource Remove="Features\Sales\Queries\**" />
     <None Remove="Common\Exceptions\**" />
     <None Remove="Features\Accounts\Queries\**" />
-    <None Remove="Features\Sales\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
