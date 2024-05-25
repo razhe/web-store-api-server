@@ -28,8 +28,8 @@ namespace web_store_server.Shared.Middlewares
             }
             catch (Exception ex)
             {
-
-                _logger.LogError("¡Exception Ocurred! \n [Source]: {Source}  \n [Message]: {Message}", ex.Source, ex.Message);
+                _logger.LogError("¡Exception Ocurred!");
+                _logger.LogError("[Source]: \n {Source}  \n [Message]: \n {Message} \n [StackTrace]: \n {StackTrace}", ex.Source, ex.Message, ex.StackTrace);
 
                 var problemDetails = _factory.CreateProblemDetails(
                     httpContext: context,

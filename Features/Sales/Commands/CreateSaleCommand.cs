@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 using web_store_server.Common.Enums;
 using web_store_server.Common.Helpers;
 using web_store_server.Domain.Communication;
@@ -25,58 +24,58 @@ namespace web_store_server.Features.Sales.Commands
 
         public async Task<Result<bool>> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
-            var products = await _dbContext.Products
-                .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
-                .ToArrayAsync(cancellationToken);
-
-            var customerId = await _dbContext.Customers.Where(x => x.UserId == request.UserId)
-                .Select(x => x.Id)
-                .FirstAsync(cancellationToken);
-
-            Order order = new()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = customerId,
-                OrderNumber = SaleHelpers.GenerateOrderNumber(),
-                Status = (int)OrderEnums.Status.CREATED,
-                CreatedAt = DateTimeOffset.Now,
-                Sale = new Sale()
-                {
-                    Id = Guid.NewGuid(),
-                    Total = products.Select(x => x.Price).Sum(),
-                    CreatedAt = DateTimeOffset.Now,
-                    ProductSales = new List<ProductSale>()
-                }
-            };
-
-            foreach (var item in request.CreateSaleDto)
-            {
-                var product = products.Where(x => x.Id == item.ProductId).First();
-
-                if (product.Stock - item.Quantity <= 0)
-                {
-                    return new Result<bool>("Error, la cantidad de producto requerido supera la stock disponible.");
-                }
-
-                product.Stock -= item.Quantity;
-
-                order.Sale.ProductSales.Add(new ProductSale()
-                {
-                    Product = product,
-                    Sale = order.Sale,
-                    Quantity = item.Quantity,
-                    Subtotal = product.Price * item.Quantity,
-                    UnitPrice = product.Price,
-                });
-            }
-
-            await _dbContext.Orders.AddAsync(order, cancellationToken);
-
             try
             {
+                var products = await _dbContext.Products
+                    .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
+                    .ToArrayAsync(cancellationToken);
+
+                var customerId = await _dbContext.Customers.Where(x => x.UserId == request.UserId)
+                    .Select(x => x.Id)
+                    .FirstAsync(cancellationToken);
+
+                Order order = new()
+                {
+                    Id = Guid.NewGuid(),
+                    CustomerId = customerId,
+                    OrderNumber = SaleHelpers.GenerateOrderNumber(),
+                    Status = (int)OrderEnums.Status.CREATED,
+                    CreatedAt = DateTimeOffset.Now,
+                    Sale = new Sale()
+                    {
+                        Id = Guid.NewGuid(),
+                        Total = products.Select(x => x.Price).Sum(),
+                        CreatedAt = DateTimeOffset.Now,
+                        ProductSales = new List<ProductSale>()
+                    }
+                };
+
+                foreach (var item in request.CreateSaleDto)
+                {
+                    var product = products.Where(x => x.Id == item.ProductId).First();
+
+                    if (product.Stock - item.Quantity <= 0)
+                    {
+                        return new Result<bool>("Error, la cantidad de producto requerido supera la stock disponible.");
+                    }
+
+                    product.Stock -= item.Quantity;
+
+                    order.Sale.ProductSales.Add(new ProductSale()
+                    {
+                        Product = product,
+                        Sale = order.Sale,
+                        Quantity = item.Quantity,
+                        Subtotal = product.Price * item.Quantity,
+                        UnitPrice = product.Price,
+                    });
+                }
+
+                await _dbContext.Orders.AddAsync(order, cancellationToken);
+
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException cex) // Manejando error de concurrencia
+            catch (Exception e) when (e is DbUpdateConcurrencyException cex) // Manejando error de concurrencia
             {
                 foreach (var entry in cex.Entries)
                 {
@@ -109,6 +108,11 @@ namespace web_store_server.Features.Sales.Commands
                     }
                 }
             }
+            catch  // Delegar el manejo de la excepcion al GlobalErrorHandler
+            {
+                throw;
+            }
+
             return new Result<bool>(true);
         }
     }
