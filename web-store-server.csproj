@@ -20,9 +20,17 @@
 
   <ItemGroup>
     <Compile Remove="Common\Exceptions\**" />
+    <Compile Remove="Features\Accounts\Queries\**" />
+    <Compile Remove="Features\Sales\Queries\**" />
     <Content Remove="Common\Exceptions\**" />
+    <Content Remove="Features\Accounts\Queries\**" />
+    <Content Remove="Features\Sales\Queries\**" />
     <EmbeddedResource Remove="Common\Exceptions\**" />
+    <EmbeddedResource Remove="Features\Accounts\Queries\**" />
+    <EmbeddedResource Remove="Features\Sales\Queries\**" />
     <None Remove="Common\Exceptions\**" />
+    <None Remove="Features\Accounts\Queries\**" />
+    <None Remove="Features\Sales\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,11 +55,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Razor.Templating.Core" Version="1.9.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Accounts\Queries\" />
-    <Folder Include="Features\Sales\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
