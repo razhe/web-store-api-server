@@ -9,18 +9,18 @@ namespace web_store_server.Features.Users.Commands
 
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Result<bool>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public DeleteUserCommandHandler(StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<bool>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _context
+                var user = await _dbContext
                     .Users
                     .Where(x => x.Id == request.UserId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -30,10 +30,8 @@ namespace web_store_server.Features.Users.Commands
                     return new Result<bool>("No se ha encontrado el usuario con ese identificador.");
                 }
 
-                user.Active = false;
-                user.DeletedAt = DateTimeOffset.Now;
-
-                await _context.SaveChangesAsync(cancellationToken);
+                _dbContext.Remove(user); // IAuditable - Soft delete Strategy
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<bool>(true);
             }

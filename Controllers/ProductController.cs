@@ -87,6 +87,12 @@ namespace web_store_server.Controllers
                 _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
 
+        /// <summary>
+        /// Permite eliminar un producto
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteProduct(
             Guid id,

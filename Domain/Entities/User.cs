@@ -2,10 +2,11 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using web_store_server.Domain.Entities.Interfaces;
 
 namespace web_store_server.Domain.Entities
 {
-    public partial class User
+    public partial class User : IAuditable
     {
         public User()
         {

@@ -12,12 +12,12 @@ namespace web_store_server.Features.Subcategories.Commands
     public class CreateSubcategoryCommandHandler : IRequestHandler<CreateSubcategoryCommand>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public CreateSubcategoryCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task Handle(CreateSubcategoryCommand request, CancellationToken cancellationToken)
@@ -26,8 +26,8 @@ namespace web_store_server.Features.Subcategories.Commands
             {
                 ProductSubcategory subcategory = _mapper.Map<CreateUpdateSubcategoryDto, ProductSubcategory>(request.Subcategory);
 
-                _context.Add(subcategory);
-                await _context.SaveChangesAsync(cancellationToken);
+                _dbContext.Add(subcategory);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return;
             }

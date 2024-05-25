@@ -12,19 +12,19 @@ namespace web_store_server.Features.Subcategories.Queries
 
     public class GetSubcategoriesQueryHandler : IRequestHandler<GetSubcategoriesQuery, Result<IEnumerable<SubcategoryDto>>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
         private readonly IMapper _mapper;
 
         public GetSubcategoriesQueryHandler(IMapper mapper, StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
         }
         public async Task<Result<IEnumerable<SubcategoryDto>>> Handle(GetSubcategoriesQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var response = await _context
+                var response = await _dbContext
                     .ProductSubcategories
                     .Where(p => !p.IsDeleted)
                     .ProjectTo<SubcategoryDto>(_mapper.ConfigurationProvider)

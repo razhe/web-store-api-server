@@ -12,19 +12,19 @@ namespace web_store_server.Features.Users.Commands
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<CreateUpdateUserDto>>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public UpdateUserCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<CreateUpdateUserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await _context
+                var user = await _dbContext
                     .Users
                     .Where(x => x.Id == request.UserId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -35,7 +35,7 @@ namespace web_store_server.Features.Users.Commands
                 }
 
                 request.UserDto.MapToModel(user);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<CreateUpdateUserDto>(request.UserDto);
             }

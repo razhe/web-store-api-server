@@ -11,18 +11,18 @@ namespace web_store_server.Features.Subcategories.Commands
 
     public class UpdateSubcategoryCommandHandler : IRequestHandler<UpdateSubcategoryCommand, Result<int>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public UpdateSubcategoryCommandHandler(StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<int>> Handle(UpdateSubcategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var productSubcategory = await _context
+                var productSubcategory = await _dbContext
                     .ProductSubcategories
                     .Where(x => x.Id == request.SubcategoryId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -33,7 +33,7 @@ namespace web_store_server.Features.Subcategories.Commands
                 }
 
                 request.Subcategory.MapToModel(productSubcategory);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<int>(productSubcategory.Id);
             }

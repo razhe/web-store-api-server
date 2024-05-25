@@ -13,19 +13,19 @@ namespace web_store_server.Features.Categories.Queries
     public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Result<IEnumerable<CategoryDto>>>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public GetCategoriesQueryHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<IEnumerable<CategoryDto>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var response = await _context
+                var response = await _dbContext
                     .ProductCategories
                     .Where(p => !p.IsDeleted)
                     .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)

@@ -22,11 +22,16 @@ namespace web_store_server.Domain.Interceptors
                 {
                     switch (entry.State)
                     {
-                        case EntityState.Modified:
+                        case EntityState.Modified: // Auditoria Actualización
                             entry.Entity.UpdatedAt = DateTimeOffset.Now;
                             break;
-                        case EntityState.Added:
+                        case EntityState.Added: // Auditoria Creación
                             entry.Entity.CreatedAt = DateTimeOffset.Now;
+                            break;
+                        case EntityState.Deleted: // Estrategia Soft Delete
+                            entry.State = EntityState.Modified;
+                            entry.Entity.DeletedAt = DateTimeOffset.Now;
+                            entry.Entity.IsDeleted = true;
                             break;
                     }
                 }

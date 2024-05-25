@@ -14,12 +14,12 @@ namespace web_store_mvc.Features.Products.Commands
         IRequestHandler<UpdateProductCommand, Result<ProductDto>>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public UpdateProductCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<ProductDto>> Handle(
@@ -28,7 +28,7 @@ namespace web_store_mvc.Features.Products.Commands
         {
             try
             {
-                var product = await _context
+                var product = await _dbContext
                 .Products
                 .Where(x => x.Id == request.ProductId)
                 .FirstOrDefaultAsync(token);
@@ -39,7 +39,7 @@ namespace web_store_mvc.Features.Products.Commands
                 }
 
                 request.Product.MapToModel(product);
-                await _context.SaveChangesAsync(token);
+                await _dbContext.SaveChangesAsync(token);
 
                 ProductDto productUpdated = _mapper.Map<ProductDto>(product);
 

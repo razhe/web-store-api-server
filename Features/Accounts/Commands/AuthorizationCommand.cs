@@ -14,14 +14,14 @@ namespace web_store_server.Features.Accounts.Commands
     public class AuthorizationCommandHandler
         : IRequestHandler<AuthorizationCommand, Result<CreateAuthorizationDto>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
         private readonly IAccountService _accountService;
 
         public AuthorizationCommandHandler(
             StoreContext context,
             IAccountService accountService)
         {
-            _context = context;
+            _dbContext = context;
             _accountService = accountService;
         }
 
@@ -31,12 +31,12 @@ namespace web_store_server.Features.Accounts.Commands
         {
             try
             {
-                var user = await _context.Users
+                var user = await _dbContext.Users
                 .AsNoTracking()
                 .Where(x => x.Email == request.AuthorizationRequest.Email)
                 .FirstOrDefaultAsync(cancellationToken: token);
 
-                var oAuthClient = await _context.OauthClients
+                var oAuthClient = await _dbContext.OauthClients
                     .AsNoTracking()
                     .Where(x =>
                         x.ClientId == request.AuthorizationRequest.ClientId &&

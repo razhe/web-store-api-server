@@ -15,12 +15,12 @@ namespace web_store_mvc.Features.Products.Queries
         IRequestHandler<GetProductsQuery, Result<IEnumerable<GetProductDto>>>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public GetProductsQueryHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<IEnumerable<GetProductDto>>> Handle(
@@ -29,7 +29,7 @@ namespace web_store_mvc.Features.Products.Queries
         {
             try
             {
-                var response = await _context
+                var response = await _dbContext
                     .Products
                     .Where(p => !p.IsDeleted)
                     .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).ToArrayAsync(token);

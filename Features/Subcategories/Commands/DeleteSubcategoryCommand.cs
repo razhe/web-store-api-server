@@ -9,18 +9,18 @@ namespace web_store_server.Features.Subcategories.Commands
 
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteSubcategoryCommand, Result<bool>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public DeleteCategoryCommandHandler(StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<bool>> Handle(DeleteSubcategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var productSubcategory = await _context
+                var productSubcategory = await _dbContext
                     .ProductCategories
                     .Where(x => x.Id == request.SubcategoryId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -30,10 +30,8 @@ namespace web_store_server.Features.Subcategories.Commands
                     return new Result<bool>("No se ha encontrado una subcategoría con ese identificador.");
                 }
 
-                productSubcategory.Active = false;
-                productSubcategory.DeletedAt = DateTimeOffset.Now;
-
-                await _context.SaveChangesAsync(cancellationToken);
+                _dbContext.Remove(productSubcategory); // IAuditable - Soft delete Strategy
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<bool>(true);
             }

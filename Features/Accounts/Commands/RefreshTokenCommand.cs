@@ -15,12 +15,12 @@ namespace web_store_server.Features.Accounts.Commands
         IRequestHandler<RefreshTokenCommand, Result<CreateAuthorizationDto>>
     {
         private readonly IAccountService _accountService;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public RefreshTokenCommandHandler(IAccountService accountService, StoreContext context)
         {
             _accountService = accountService;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<CreateAuthorizationDto>> Handle(
@@ -45,11 +45,11 @@ namespace web_store_server.Features.Accounts.Commands
                     return new Result<CreateAuthorizationDto>("Error, Token inválido o alterado.");
                 }
 
-                var user = await _context.Users
+                var user = await _dbContext.Users
                     .Where(x => x.Id == Guid.Parse(jwtUserId))
                     .FirstAsync(token);
 
-                var client = await _context.OauthClients
+                var client = await _dbContext.OauthClients
                     .Where(x => x.Id == int.Parse(jwtClientId))
                     .FirstAsync(token);
 
@@ -58,7 +58,7 @@ namespace web_store_server.Features.Accounts.Commands
                     return new Result<CreateAuthorizationDto>("Usuario no encontrado, verifica la información");
                 }
 
-                var refreshExists = _context.UserOauthClientRequests
+                var refreshExists = _dbContext.UserOauthClientRequests
                     .Where(x =>
                         x.AccessToken == request.RefreshTokenRequest.ExpiredToken &&
                         x.RefreshToken == request.RefreshTokenRequest.RefreshToken)

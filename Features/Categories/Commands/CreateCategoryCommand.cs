@@ -11,12 +11,12 @@ namespace web_store_server.Features.Categories.Commands
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public CreateCategoryCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -25,8 +25,8 @@ namespace web_store_server.Features.Categories.Commands
             {
                 ProductCategory productCategory = _mapper.Map<CreateUpdateCategoryDto, ProductCategory>(request.ProductCategoryDto);
 
-                _context.Add(productCategory);
-                await _context.SaveChangesAsync(cancellationToken);
+                _dbContext.Add(productCategory);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return;
             }

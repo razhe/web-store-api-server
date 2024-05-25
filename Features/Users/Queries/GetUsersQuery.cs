@@ -13,12 +13,12 @@ namespace web_store_server.Features.Users.Queries
 
     public class GetUsersQueryHanlder : IRequestHandler<GetUsersQuery, Result<IEnumerable<UserDto>>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
         private readonly IMapper _mapper;
 
         public GetUsersQueryHanlder(StoreContext context, IMapper mapper)
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
         }
 
@@ -28,7 +28,7 @@ namespace web_store_server.Features.Users.Queries
         {
             try
             {
-                var response = await _context.Users
+                var response = await _dbContext.Users
                     .Where(x => !x.IsDeleted)
                     .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 

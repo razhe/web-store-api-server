@@ -15,19 +15,19 @@ namespace web_store_server.Features.Categories.Commands
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result<CategoryDto>>
     {
         private readonly IMapper _mapper;
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public UpdateCategoryCommandHandler(IMapper mapper, StoreContext context)
         {
             _mapper = mapper;
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<CategoryDto>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var productCategory = await _context
+                var productCategory = await _dbContext
                     .ProductCategories
                     .Where(x => x.Id == request.CategoryId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -38,7 +38,7 @@ namespace web_store_server.Features.Categories.Commands
                 }
 
                 request.ProductCategoryDto.MapToModel(productCategory);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 CategoryDto categoryUpdated = _mapper.Map<CategoryDto>(productCategory);
 

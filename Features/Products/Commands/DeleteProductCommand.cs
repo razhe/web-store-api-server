@@ -11,11 +11,11 @@ namespace web_store_mvc.Features.Products.Commands
     public class DeleteProductCommandHandler :
         IRequestHandler<DeleteProductCommand, Result<bool>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public DeleteProductCommandHandler(StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<bool>> Handle(
@@ -24,7 +24,7 @@ namespace web_store_mvc.Features.Products.Commands
         {
             try
             {
-                var product = await _context
+                var product = await _dbContext
                 .Products
                 .Where(x => x.Id == request.ProductId)
                 .FirstOrDefaultAsync(token);
@@ -34,10 +34,8 @@ namespace web_store_mvc.Features.Products.Commands
                     return new Result<bool>("No se ha encontrado un producto con ese identificador.");
                 }
 
-                product.Active = false;
-                product.DeletedAt = DateTimeOffset.Now;
-
-                await _context.SaveChangesAsync(token);
+                _dbContext.Remove(product); // IAuditable - Soft delete Strategy
+                await _dbContext.SaveChangesAsync(token);
 
                 return new Result<bool>(true);
             }

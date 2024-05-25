@@ -14,12 +14,12 @@ namespace web_store_mvc.Features.Products.Queries
     public class GetProductByIdQueryHandler :
         IRequestHandler<GetProductByIdQuery, Result<GetProductDto?>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
         private readonly IMapper _mapper;
 
         public GetProductByIdQueryHandler(StoreContext context, IMapper mapper)
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
         }
 
@@ -29,7 +29,7 @@ namespace web_store_mvc.Features.Products.Queries
         {
             try
             {
-                var response = await _context
+                var response = await _dbContext
                     .Products
                     .Where(x => x.Id == request.ProductId)
                     .ProjectTo<GetProductDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(token);

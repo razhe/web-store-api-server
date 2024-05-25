@@ -18,7 +18,9 @@ namespace web_store_server.Domain.Entities
         public int Number { get; set; }
         public string AditionalInfo { get; set; }
         public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
 
         public virtual Customer Customer { get; set; }

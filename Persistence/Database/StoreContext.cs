@@ -2,7 +2,9 @@
 #nullable disable
 using EntityFrameworkCore.SqlServer.JsonExtention;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using web_store_server.Domain.Entities;
+using web_store_server.Domain.Entities.Interfaces;
 
 namespace web_store_server.Persistence.Database
 {
@@ -48,7 +50,8 @@ namespace web_store_server.Persistence.Database
                 entity.ToTable("customers");
 
                 entity.HasIndex(e => e.UserId, "UQ__customer__B9BE370E22C49B8C")
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("([user_id] IS NOT NULL)");
 
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
@@ -106,10 +109,14 @@ namespace web_store_server.Persistence.Database
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
+                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(500)
                     .HasColumnName("description");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Number).HasColumnName("number");
 
@@ -684,12 +691,13 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.IsDeleted)
-                    .HasColumnName("is_deleted")
-                    .HasDefaultValue(0);
+                    .HasColumnName("is_deleted");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("(sysdatetimeoffset())");
+
+                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -700,7 +708,6 @@ namespace web_store_server.Persistence.Database
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
             });
 
             modelBuilder.Entity<UserOauthClientRequest>(entity =>
@@ -777,7 +784,6 @@ namespace web_store_server.Persistence.Database
 
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

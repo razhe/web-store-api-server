@@ -2,10 +2,11 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using web_store_server.Domain.Entities.Interfaces;
 
 namespace web_store_server.Domain.Entities
 {
-    public partial class ProductCategory
+    public partial class ProductCategory : IAuditable
     {
         public ProductCategory()
         {

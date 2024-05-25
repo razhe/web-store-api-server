@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Commands
@@ -9,18 +10,18 @@ namespace web_store_server.Features.Categories.Commands
 
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, Result<bool>>
     {
-        private readonly StoreContext _context;
+        private readonly StoreContext _dbContext;
 
         public DeleteCategoryCommandHandler(StoreContext context)
         {
-            _context = context;
+            _dbContext = context;
         }
 
         public async Task<Result<bool>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var productCategory = await _context
+                var productCategory = await _dbContext
                     .ProductCategories
                     .Where(x => x.Id == request.CategoryId)
                     .FirstOrDefaultAsync(cancellationToken);
@@ -30,10 +31,8 @@ namespace web_store_server.Features.Categories.Commands
                     return new Result<bool>("No se ha encontrado una categoria con ese identificador.");
                 }
 
-                productCategory.Active = false;
-                productCategory.DeletedAt = DateTimeOffset.Now;
-
-                await _context.SaveChangesAsync(cancellationToken);
+                _dbContext.Remove(productCategory); // IAuditable - Soft delete Strategy
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<bool>(true);
             }
