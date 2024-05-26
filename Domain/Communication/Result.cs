@@ -17,7 +17,7 @@
         /// Produce un resultado fallido.
         /// </summary>
         /// <param name="message">Error message.</param>
-        public Result(string message) : this(false, message, default(T))
+        public Result(string message) : this(false, message, default)
         {
         }
 
