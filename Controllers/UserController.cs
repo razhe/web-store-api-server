@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Users;
+using web_store_server.Features.Users.Commands;
 using web_store_server.Features.Users.Queries;
 
 namespace web_store_server.Controllers
@@ -36,5 +37,33 @@ namespace web_store_server.Controllers
                     Data = result.Data
                 });
         }
+
+        [HttpPost]
+        public async Task<ActionResult<DefaultAPIResponse<Guid>>> CreateUsers(
+            [FromBody] CreateUpdateUserDto user,
+            CancellationToken token)
+        {
+            var result = await _sender.Send(new CreateUserCommand(user), token);
+
+            return result.IsSuccess ?
+                _APIResultHandler.HandleDefaultResponse(
+                StatusCodes.Status200OK,
+                new DefaultAPIResponse<Guid>()
+                {
+                    Message = "Usuario creado exitosamente.",
+                    IsSuccess = true,
+                    Data = result.Data
+                }) :
+                _APIResultHandler.HandleDefaultResponse(
+                StatusCodes.Status400BadRequest,
+                new DefaultAPIResponse<Guid>()
+                {
+                    Message = result.Message,
+                    IsSuccess = true,
+                    Data = result.Data
+                });
+        }
+
+        
     }
 }

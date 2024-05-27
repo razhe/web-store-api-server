@@ -10,7 +10,10 @@ namespace web_store_server.Domain.Profiles
         public UserProfile() 
         {
             CreateMap<User, UserDto>();
-            CreateMap<User, CreateUpdateUserDto>();
+
+            CreateMap<CreateUpdateUserDto, User>()
+                .ForMember(dest => dest.Id,
+                opt => opt.MapFrom(src => Guid.NewGuid()));
         }
     }
 }

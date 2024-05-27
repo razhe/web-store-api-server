@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Users;
 using web_store_server.Domain.Entities;
@@ -8,9 +9,9 @@ using web_store_server.Persistence.Database;
 namespace web_store_server.Features.Users.Commands
 {
     public record CreateUserCommand(CreateUpdateUserDto UserDto) : 
-        IRequest<Result<CreateUpdateUserDto>>;
+        IRequest<Result<Guid>>;
 
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<CreateUpdateUserDto>>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Guid>>
     {
         private readonly StoreContext _dbContext;
         private readonly IMapper _mapper;
@@ -21,14 +22,23 @@ namespace web_store_server.Features.Users.Commands
             _mapper = mapper;
         }
 
-        public async Task<Result<CreateUpdateUserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                bool userExists = await _dbContext.Users
+                    .AnyAsync(x => x.Email.Trim().ToUpper() == request.UserDto.Email.Trim().ToUpper(), 
+                    cancellationToken);
+                
+                if (userExists)
+                {
+                    return new Result<Guid>("Ya existe un usuario con ese correo.");
+                }
+
                 User user = _mapper.Map<CreateUpdateUserDto, User>(request.UserDto);
                 await _dbContext.AddAsync(user, cancellationToken);
 
-                return new Result<CreateUpdateUserDto>(request.UserDto);
+                return new Result<Guid>(user.Id);
             }
             catch
             {
