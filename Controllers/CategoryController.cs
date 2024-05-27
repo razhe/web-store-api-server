@@ -1,14 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Categories;
-using web_store_server.Domain.Dtos.Users;
 using web_store_server.Features.Categories.Commands;
 using web_store_server.Features.Categories.Queries;
-using web_store_server.Features.Users.Commands;
-using web_store_server.Features.Users.Queries;
 
 namespace web_store_server.Controllers
 {
@@ -86,7 +82,7 @@ namespace web_store_server.Controllers
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpPut("{categoryId:int}")]
-        public async Task<ActionResult<DefaultAPIResponse<CategoryDto>>> UpdateUsers(
+        public async Task<ActionResult<DefaultAPIResponse<CategoryDto>>> UpdateCategory(
             [FromRoute] int categoryId,
             [FromBody] CreateUpdateCategoryDto category,
             CancellationToken token)
@@ -119,7 +115,7 @@ namespace web_store_server.Controllers
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpDelete("{categoryId:int}")]
-        public async Task<ActionResult<DefaultAPIResponse<AnyType>>> RemoveUser(
+        public async Task<ActionResult<DefaultAPIResponse<AnyType>>> RemoveCategory(
             [FromRoute] int categoryId,
             CancellationToken token)
         {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Categories;
 using web_store_server.Domain.Dtos.Subcategories;
 using web_store_server.Domain.Entities;
@@ -7,9 +8,9 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Subcategories.Commands
 {
-    public record CreateSubcategoryCommand(CreateUpdateSubcategoryDto Subcategory) : IRequest;
+    public record CreateSubcategoryCommand(CreateUpdateSubcategoryDto Subcategory) : IRequest<Result<int>>;
 
-    public class CreateSubcategoryCommandHandler : IRequestHandler<CreateSubcategoryCommand>
+    public class CreateSubcategoryCommandHandler : IRequestHandler<CreateSubcategoryCommand, Result<int>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _dbContext;
@@ -20,7 +21,7 @@ namespace web_store_server.Features.Subcategories.Commands
             _dbContext = context;
         }
 
-        public async Task Handle(CreateSubcategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(CreateSubcategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -29,7 +30,7 @@ namespace web_store_server.Features.Subcategories.Commands
                 _dbContext.Add(subcategory);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                return;
+                return new Result<int>(subcategory.Id);
             }
             catch
             {
