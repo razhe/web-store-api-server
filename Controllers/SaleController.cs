@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using web_store_mvc.Features.Products.Queries;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Dtos.Admin;
+using web_store_server.Domain.Dtos.Products;
 using web_store_server.Domain.Dtos.Sales;
 using web_store_server.Features.Sales.Commands;
+using web_store_server.Features.Sales.Queries;
 
 namespace web_store_server.Controllers
 {
@@ -49,9 +53,32 @@ namespace web_store_server.Controllers
                     new DefaultAPIResponse<Guid>()
                     {
                         IsSuccess = false,
-                        Message = "Venta registrada con éxito.",
+                        Message = result.Message,
                         Data = result.Data
                     });
+        }
+
+        /// <summary>
+        /// Entrega el historial de ventas
+        /// </summary>
+        /// <param name="queryParams"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetSaleDto>>> GetSalesHistory(
+            [FromQuery]SalesHistoryQueryParams queryParams,
+            CancellationToken token)
+        {
+            var result = await _sender.Send(new GetHistoryQuery(queryParams), token);
+
+            return _APIResultHandler.HandleDefaultResponse(
+                StatusCodes.Status200OK,
+                new DefaultAPIResponse<IEnumerable<GetSaleDto>>()
+                {
+                    IsSuccess = true,
+                    Message = "Proceso realizado exitosamente.",
+                    Data = result.Data,
+                });
         }
     }
 }

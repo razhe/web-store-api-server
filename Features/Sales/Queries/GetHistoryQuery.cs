@@ -2,13 +2,14 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Dtos.Admin;
 using web_store_server.Domain.Dtos.Sales;
 using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Sales.Queries
 {
-    public record GetHistoryQuery(string SearchTerm, string SaleId, DateTimeOffset StartDate, DateTimeOffset EndDate) :
+    public record GetHistoryQuery(SalesHistoryQueryParams QueryParams) :
         IRequest<Result<IEnumerable<GetSaleDto>>>;
 
     public class GetHistoryQueryHandler : IRequestHandler<GetHistoryQuery, Result<IEnumerable<GetSaleDto>>>
@@ -29,11 +30,11 @@ namespace web_store_server.Features.Sales.Queries
 
             try
             {
-                if (request.SearchTerm.Equals("date", StringComparison.OrdinalIgnoreCase))
+                if (request.QueryParams.SearchTerm.Equals("date", StringComparison.OrdinalIgnoreCase))
                 {
                     resultList = await saleQuery.Where(x =>
-                        x.CreatedAt >= request.StartDate &&
-                        x.CreatedAt <= request.EndDate)
+                        x.CreatedAt >= request.QueryParams.StartDate &&
+                        x.CreatedAt <= request.QueryParams.EndDate)
                     .Include(x => x.Order)
                     .Include(x => x.ProductSales)
                     .ThenInclude(x => x.Product)
@@ -42,7 +43,7 @@ namespace web_store_server.Features.Sales.Queries
                 else
                 {
                     resultList = await saleQuery.Where(x =>
-                        x.Order.OrderNumber.Equals(request.SearchTerm, StringComparison.OrdinalIgnoreCase))
+                        x.Order.OrderNumber.Equals(request.QueryParams.SearchTerm, StringComparison.OrdinalIgnoreCase))
                     .Include(x => x.Order)
                     .Include(x => x.ProductSales)
                     .ThenInclude(x => x.Product)
