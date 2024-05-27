@@ -12,7 +12,7 @@ namespace web_store_server.Domain.Communication
             _problemDetailsFactory = problemDetailsFactory;
         }
 
-        public ActionResult HandleDefaultResponse(int statusCode, dynamic response)
+        public ActionResult HandleResponse(int statusCode, dynamic response)
         {
             var result = new
             {
@@ -28,7 +28,7 @@ namespace web_store_server.Domain.Communication
             };
         }
 
-        public ActionResult HandleDefaultResponse(int statusCode, dynamic response, KeyValuePair<int, string> errors)
+        public ActionResult HandleResponse(int statusCode, dynamic response, KeyValuePair<int, string> errors)
         {
             var result = new
             {

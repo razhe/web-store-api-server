@@ -34,7 +34,7 @@ namespace web_store_server.Controllers
         {
             var result = await _sender.Send(new GetUsersQuery(), token);
 
-            return _APIResultHandler.HandleDefaultResponse(
+            return _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
                 new DefaultAPIResponse<IEnumerable<UserDto>>()
                 {
@@ -58,7 +58,7 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new CreateUserCommand(user), token);
 
             return result.IsSuccess ?
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
                 new DefaultAPIResponse<Guid>()
                 {
@@ -66,7 +66,7 @@ namespace web_store_server.Controllers
                     IsSuccess = true,
                     Data = result.Data
                 }) :
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
                 new DefaultAPIResponse<Guid>()
                 {
@@ -92,7 +92,7 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new UpdateUserCommand(user, userId), token);
 
             return result.IsSuccess ?
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
                 new DefaultAPIResponse<CreateUpdateUserDto?>()
                 {
@@ -100,7 +100,7 @@ namespace web_store_server.Controllers
                     IsSuccess = true,
                     Data = result.Data
                 }) :
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
                 new DefaultAPIResponse<CreateUpdateUserDto?>()
                 {
@@ -124,7 +124,7 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new DeleteUserCommand(userId), token);
 
             return result.IsSuccess ?
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
                 new DefaultAPIResponse<CreateUpdateUserDto?>()
                 {
@@ -132,7 +132,7 @@ namespace web_store_server.Controllers
                     IsSuccess = true,
                     Data = null
                 }) :
-                _APIResultHandler.HandleDefaultResponse(
+                _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
                 new DefaultAPIResponse<CreateUpdateUserDto?>()
                 {

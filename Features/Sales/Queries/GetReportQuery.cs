@@ -8,7 +8,7 @@ using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Sales.Queries
 {
-    public record GetReportQuery(DateTimeOffset StartDate, DateTimeOffset EndDate) :
+    public record GetReportQuery(ReportQueryParams QueryParams) :
         IRequest<Result<IEnumerable<ReportDto>>>;
 
     public class GetReportQueryHandler : IRequestHandler<GetReportQuery, Result<IEnumerable<ReportDto>>>
@@ -34,8 +34,8 @@ namespace web_store_server.Features.Sales.Queries
                     .Include(x => x.Sale)
                     .ThenInclude(x => x.Order)
                     .Where(x => 
-                        x.Sale.CreatedAt >= request.StartDate &&
-                        x.Sale.CreatedAt <= request.EndDate
+                        x.Sale.CreatedAt >= request.QueryParams.StartDate &&
+                        x.Sale.CreatedAt <= request.QueryParams.EndDate
                     ).ToArrayAsync(cancellationToken);
 
                 return new Result<IEnumerable<ReportDto>>(_mapper.Map<IEnumerable<ReportDto>>(resultList));

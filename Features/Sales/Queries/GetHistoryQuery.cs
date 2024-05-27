@@ -32,6 +32,11 @@ namespace web_store_server.Features.Sales.Queries
             {
                 if (request.QueryParams.SearchTerm.Equals("date", StringComparison.OrdinalIgnoreCase))
                 {
+                    if (request.QueryParams.StartDate is null || request.QueryParams.EndDate is null)
+                    {
+                        return new Result<IEnumerable<GetSaleDto>>("Si el filtro es de tipo Fecha debes incluir los campos 'StartDate' y 'EndDate'.");
+                    }
+
                     resultList = await saleQuery.Where(x =>
                         x.CreatedAt >= request.QueryParams.StartDate &&
                         x.CreatedAt <= request.QueryParams.EndDate)
@@ -42,8 +47,13 @@ namespace web_store_server.Features.Sales.Queries
                 }
                 else
                 {
+                    if (string.IsNullOrWhiteSpace(request.QueryParams.OrderNumber))
+                    {
+                        return new Result<IEnumerable<GetSaleDto>>("Si el filtro es de tipo Numero de orden debes incluir el campo 'OrderNumber'.");
+                    }
+
                     resultList = await saleQuery.Where(x =>
-                        x.Order.OrderNumber.Equals(request.QueryParams.SearchTerm, StringComparison.OrdinalIgnoreCase))
+                        x.Order.OrderNumber.ToUpper().Equals(request.QueryParams.SearchTerm.ToUpper()))
                     .Include(x => x.Order)
                     .Include(x => x.ProductSales)
                     .ThenInclude(x => x.Product)
