@@ -27,7 +27,7 @@ namespace web_store_server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> CreateSale(
+        public async Task<ActionResult<DefaultAPIResponse<Guid>>> CreateSale(
             IEnumerable<CreateSaleDto> sales,
             CancellationToken token)
         {
@@ -36,8 +36,22 @@ namespace web_store_server.Controllers
             var result = await _sender.Send(new CreateSaleCommand(sales, userId), token);
 
             return result.IsSuccess ?
-                Ok(result.Data) :
-                _APIResultHandler.HandleProblemDetailsError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _APIResultHandler.HandleDefaultResponse(
+                    StatusCodes.Status200OK,
+                    new DefaultAPIResponse<Guid>()
+                    {
+                        IsSuccess = true,
+                        Message = "Venta registrada con éxito.",
+                        Data = result.Data 
+                    }) :
+                _APIResultHandler.HandleDefaultResponse(
+                    StatusCodes.Status200OK,
+                    new DefaultAPIResponse<Guid>()
+                    {
+                        IsSuccess = false,
+                        Message = "Venta registrada con éxito.",
+                        Data = result.Data
+                    });
         }
     }
 }

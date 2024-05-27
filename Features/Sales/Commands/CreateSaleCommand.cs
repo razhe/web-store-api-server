@@ -10,10 +10,10 @@ using web_store_server.Persistence.Database;
 namespace web_store_server.Features.Sales.Commands
 {
     public record CreateSaleCommand(IEnumerable<CreateSaleDto> CreateSaleDto, Guid UserId) : 
-        IRequest<Result<bool>>;
+        IRequest<Result<Guid>>;
 
     public class CreateSaleCommandHandler :
-        IRequestHandler<CreateSaleCommand, Result<bool>>
+        IRequestHandler<CreateSaleCommand, Result<Guid>>
     {
         private readonly StoreContext _dbContext;
 
@@ -22,7 +22,7 @@ namespace web_store_server.Features.Sales.Commands
             _dbContext = dbContext;
         }
 
-        public async Task<Result<bool>> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace web_store_server.Features.Sales.Commands
 
                     if (product.Stock - item.Quantity <= 0)
                     {
-                        return new Result<bool>("Error, la cantidad de producto requerido supera la stock disponible.");
+                        return new Result<Guid>("Error, la cantidad de producto requerido supera la stock disponible.");
                     }
 
                     product.Stock -= item.Quantity;
@@ -74,6 +74,8 @@ namespace web_store_server.Features.Sales.Commands
                 await _dbContext.Orders.AddAsync(order, cancellationToken);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return new Result<Guid>(order.Sale.Id);
             }
             catch (Exception e) when (e is DbUpdateConcurrencyException cex) // Manejando error de concurrencia
             {
@@ -93,7 +95,7 @@ namespace web_store_server.Features.Sales.Commands
 
                         if (diffStock < 0)
                         {
-                            return new Result<bool>("Error al intentar realizar la compra. El stock disponible de uno de los productos es menor al deseado.");
+                            return new Result<Guid>("Error al intentar realizar la compra. El stock disponible de uno de los productos es menor al deseado.");
                         }
 
                         dbValues["Stock"] = diffStock;
@@ -102,18 +104,13 @@ namespace web_store_server.Features.Sales.Commands
                         await _dbContext.SaveChangesAsync(cancellationToken);
                         transaction.Commit();
                     }
-                    else
-                    {
-                        return new Result<bool>("Ha ocurrido un error inesperado al momento de realizar su compra. Por favor, recargue la página y si el error persiste, contactese con soporte.");
-                    }
                 }
+                return new Result<Guid>("Ha ocurrido un error inesperado al momento de realizar su compra. Por favor, recargue la página y si el error persiste, contactese con soporte.");
             }
             catch  // Delegar el manejo de la excepcion al GlobalErrorHandler
             {
                 throw;
             }
-
-            return new Result<bool>(true);
         }
     }
 }
