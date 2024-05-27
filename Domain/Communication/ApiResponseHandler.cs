@@ -12,13 +12,13 @@ namespace web_store_server.Domain.Communication
             _problemDetailsFactory = problemDetailsFactory;
         }
 
-        public ActionResult HandleDefaultResponse(int statusCode, bool status, string message, dynamic data)
+        public ActionResult HandleDefaultResponse(int statusCode, dynamic response)
         {
             var result = new
             {
-                status,
-                message,
-                data
+                response.IsSuccess,
+                response.Message,
+                response.Data,
             };
 
             return new ObjectResult(result)
@@ -28,13 +28,14 @@ namespace web_store_server.Domain.Communication
             };
         }
 
-        public ActionResult HandleDefaultResponse(int statusCode, bool status, KeyValuePair<int, string> errors, dynamic data)
+        public ActionResult HandleDefaultResponse(int statusCode, dynamic response, KeyValuePair<int, string> errors)
         {
             var result = new
             {
-                status,
-                errors,
-                data
+                response.Status,
+                response.Message,
+                response.Data,
+                errors
             };
 
             return new ObjectResult(result)

@@ -14,12 +14,12 @@ namespace web_store_server.Controllers
     public class SaleController : ControllerBase
     {
         private readonly ISender _sender;
-        private readonly ApiResponseHandler _errorResultHandler;
+        private readonly ApiResponseHandler _APIResultHandler;
 
-        public SaleController(ISender sender, ApiResponseHandler errorResultHandler)
+        public SaleController(ISender sender, ApiResponseHandler APIResultHandler)
         {
             _sender = sender;
-            _errorResultHandler = errorResultHandler;
+            _APIResultHandler = APIResultHandler;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace web_store_server.Controllers
 
             return result.IsSuccess ?
                 Ok(result.Data) :
-                _errorResultHandler.HandleProblemDetailsError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _APIResultHandler.HandleProblemDetailsError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
     }
 }
