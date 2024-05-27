@@ -2,7 +2,7 @@
 {
     public class WeekSalesDto
     {
-        public DateTimeOffset Date { get; set; }
+        public string Date { get; set; }
         public long Total { get; set; }
     }
 }

@@ -3,7 +3,8 @@
     public class DashboardDto
     {
         public int TotalSales { get; set; }
-        public long TotalEarning { get; set; }
+        public string TotalProfit { get; set; } = null!;
+        public int TotalProducts { get; set; }
         public IEnumerable<WeekSalesDto> LastWeekSales { get; set; } = null!;
     }
 }
