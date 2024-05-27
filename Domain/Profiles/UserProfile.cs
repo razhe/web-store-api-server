@@ -14,6 +14,8 @@ namespace web_store_server.Domain.Profiles
             CreateMap<CreateUpdateUserDto, User>()
                 .ForMember(dest => dest.Id,
                 opt => opt.MapFrom(src => Guid.NewGuid()));
+
+            CreateMap<User, CreateUpdateUserDto>();
         }
     }
 }

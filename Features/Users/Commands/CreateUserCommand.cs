@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using web_store_server.Common.Extensions;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Users;
 using web_store_server.Domain.Entities;
@@ -36,7 +37,11 @@ namespace web_store_server.Features.Users.Commands
                 }
 
                 User user = _mapper.Map<CreateUpdateUserDto, User>(request.UserDto);
+                user.EncryptPassword(user.Password);
+
                 await _dbContext.AddAsync(user, cancellationToken);
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<Guid>(user.Id);
             }

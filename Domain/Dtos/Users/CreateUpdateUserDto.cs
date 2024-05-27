@@ -1,4 +1,5 @@
-﻿using web_store_server.Domain.Entities;
+﻿using web_store_server.Common.Extensions;
+using web_store_server.Domain.Entities;
 
 namespace web_store_server.Domain.Dtos.Users
 {
@@ -12,7 +13,7 @@ namespace web_store_server.Domain.Dtos.Users
         public void MapToModel(User u)
         {
             u.Email = Email;
-            u.Password = Password;
+            u.EncryptPassword(Password);
             u.Role = Role;
             u.Active = Active;
         }

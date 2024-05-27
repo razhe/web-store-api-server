@@ -59,11 +59,36 @@ namespace web_store_server.Controllers
                 new DefaultAPIResponse<Guid>()
                 {
                     Message = result.Message,
-                    IsSuccess = true,
+                    IsSuccess = false,
                     Data = result.Data
                 });
         }
 
-        
+        [HttpPut("{userId:Guid}")]
+        public async Task<ActionResult<DefaultAPIResponse<CreateUpdateUserDto?>>> UpdateUsers(
+            [FromRoute] Guid userId,
+            [FromBody] CreateUpdateUserDto user,
+            CancellationToken token)
+        {
+            var result = await _sender.Send(new UpdateUserCommand(user, userId), token);
+
+            return result.IsSuccess ?
+                _APIResultHandler.HandleDefaultResponse(
+                StatusCodes.Status200OK,
+                new DefaultAPIResponse<CreateUpdateUserDto?>()
+                {
+                    Message = "Usuario actualizado exitosamente.",
+                    IsSuccess = true,
+                    Data = result.Data
+                }) :
+                _APIResultHandler.HandleDefaultResponse(
+                StatusCodes.Status400BadRequest,
+                new DefaultAPIResponse<CreateUpdateUserDto?>()
+                {
+                    Message = result.Message,
+                    IsSuccess = false,
+                    Data = result.Data
+                });
+        }
     }
 }

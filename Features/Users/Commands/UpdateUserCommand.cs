@@ -34,10 +34,23 @@ namespace web_store_server.Features.Users.Commands
                     return new Result<CreateUpdateUserDto>("No se ha encontrado un usuario con ese identificador.");
                 }
 
+                bool userExists = await _dbContext.Users
+                    .AnyAsync(x => 
+                        x.Email.Trim().ToUpper() == request.UserDto.Email.Trim().ToUpper() &&
+                        x.Id != request.UserId,
+                    cancellationToken);
+
+                if (userExists)
+                {
+                    return new Result<CreateUpdateUserDto>("Ya existe un usuario con ese correo.");
+                }
+
                 request.UserDto.MapToModel(user);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                return new Result<CreateUpdateUserDto>(request.UserDto);
+                var result = _mapper.Map<CreateUpdateUserDto>(user); // Mapeamos antes de entregar
+
+                return new Result<CreateUpdateUserDto>(result);
             }
             catch
             {
