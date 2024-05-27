@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using web_store_server.Domain.Communication;
@@ -13,6 +14,8 @@ namespace web_store_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class SubcategoryController : ControllerBase
     {
         private readonly ISender _sender;
