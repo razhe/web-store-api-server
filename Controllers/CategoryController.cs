@@ -1,9 +1,12 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Dtos.Categories;
 using web_store_server.Domain.Dtos.Users;
+using web_store_server.Features.Categories.Commands;
+using web_store_server.Features.Categories.Queries;
 using web_store_server.Features.Users.Commands;
 using web_store_server.Features.Users.Queries;
 
@@ -11,32 +14,31 @@ namespace web_store_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class UserController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ISender _sender;
         private readonly ApiResponseHandler _APIResultHandler;
 
-        public UserController(ISender sender, ApiResponseHandler APIResultHandler)
+        public CategoryController(ISender sender, ApiResponseHandler aPIResultHandler)
         {
             _sender = sender;
-            _APIResultHandler = APIResultHandler;
+            _APIResultHandler = aPIResultHandler;
         }
 
         /// <summary>
-        /// Permite listar los usuarios
+        /// Permite listar las categorías
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<DefaultAPIResponse<UserDto>>> GetUsersList(
+        public async Task<ActionResult<DefaultAPIResponse<IEnumerable<CategoryDto>>>> GetCategoriesList(
             CancellationToken token)
         {
-            var result = await _sender.Send(new GetUsersQuery(), token);
+            var result = await _sender.Send(new GetCategoriesQuery(), token);
 
             return _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
-                new DefaultAPIResponse<IEnumerable<UserDto>>()
+                new DefaultAPIResponse<IEnumerable<CategoryDto>>()
                 {
                     Message = "Operación realizada con éxito.",
                     IsSuccess = true,
@@ -45,30 +47,30 @@ namespace web_store_server.Controllers
         }
 
         /// <summary>
-        /// Permite crear un usuario
+        /// Permite crear una categoría
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="category"></param>
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<DefaultAPIResponse<Guid>>> CreateUsers(
-            [FromBody] CreateUpdateUserDto user,
+        public async Task<ActionResult<DefaultAPIResponse<int>>> CreateCategory(
+            [FromBody] CreateUpdateCategoryDto category,
             CancellationToken token)
         {
-            var result = await _sender.Send(new CreateUserCommand(user), token);
+            var result = await _sender.Send(new CreateCategoryCommand(category), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
-                new DefaultAPIResponse<Guid>()
+                new DefaultAPIResponse<int>()
                 {
-                    Message = "Usuario creado exitosamente.",
+                    Message = "Categoría creada exitosamente.",
                     IsSuccess = true,
                     Data = result.Data
                 }) :
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
-                new DefaultAPIResponse<Guid>()
+                new DefaultAPIResponse<int>()
                 {
                     Message = result.Message,
                     IsSuccess = false,
@@ -77,32 +79,32 @@ namespace web_store_server.Controllers
         }
 
         /// <summary>
-        /// Permite actualizar un usuario
+        /// Permite actualizar una categoría
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="user"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="category"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpPut("{userId:Guid}")]
-        public async Task<ActionResult<DefaultAPIResponse<CreateUpdateUserDto?>>> UpdateUsers(
-            [FromRoute] Guid userId,
-            [FromBody] CreateUpdateUserDto user,
+        [HttpPut("{categoryId:int}")]
+        public async Task<ActionResult<DefaultAPIResponse<CategoryDto>>> UpdateUsers(
+            [FromRoute] int categoryId,
+            [FromBody] CreateUpdateCategoryDto category,
             CancellationToken token)
         {
-            var result = await _sender.Send(new UpdateUserCommand(user, userId), token);
+            var result = await _sender.Send(new UpdateCategoryCommand(category, categoryId), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
-                new DefaultAPIResponse<CreateUpdateUserDto?>()
+                new DefaultAPIResponse<CategoryDto>()
                 {
-                    Message = "Usuario actualizado exitosamente.",
+                    Message = "Categoría actualizada exitosamente.",
                     IsSuccess = true,
                     Data = result.Data
                 }) :
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
-                new DefaultAPIResponse<CreateUpdateUserDto?>()
+                new DefaultAPIResponse<CategoryDto>()
                 {
                     Message = result.Message,
                     IsSuccess = false,
@@ -111,30 +113,30 @@ namespace web_store_server.Controllers
         }
 
         /// <summary>
-        /// Permite eliminar un usuario
+        /// Permite eliminar una categoría
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="categoryId"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpDelete("{userId:Guid}")]
+        [HttpDelete("{categoryId:int}")]
         public async Task<ActionResult<DefaultAPIResponse<AnyType>>> RemoveUser(
-            [FromRoute] Guid userId,
+            [FromRoute] int categoryId,
             CancellationToken token)
         {
-            var result = await _sender.Send(new DeleteUserCommand(userId), token);
+            var result = await _sender.Send(new DeleteCategoryCommand(categoryId), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,
                 new DefaultAPIResponse<AnyType?>()
                 {
-                    Message = "Usuario eliminado exitosamente.",
+                    Message = "Categoría eliminada exitosamente.",
                     IsSuccess = true,
                     Data = null
                 }) :
                 _APIResultHandler.HandleResponse(
                 StatusCodes.Status400BadRequest,
-                new DefaultAPIResponse<AnyType?> ()
+                new DefaultAPIResponse<AnyType?>()
                 {
                     Message = result.Message,
                     IsSuccess = false,

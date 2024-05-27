@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Products;
 using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
@@ -7,10 +8,9 @@ using web_store_server.Persistence.Database;
 namespace web_store_mvc.Features.Products.Commands
 {
     public record CreateProductCommand(CreateUpdateProductDto Product) 
-        : IRequest;
+        : IRequest<Result<Guid>>;
 
-    public class CreateProductCommandHandler : 
-        IRequestHandler<CreateProductCommand>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<Guid>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _dbContext;
@@ -21,7 +21,7 @@ namespace web_store_mvc.Features.Products.Commands
             _dbContext = context;
         }
 
-        public async Task Handle(
+        public async Task<Result<Guid>> Handle(
             CreateProductCommand request, 
             CancellationToken token)
         {
@@ -32,7 +32,7 @@ namespace web_store_mvc.Features.Products.Commands
                 _dbContext.Add(product);
                 await _dbContext.SaveChangesAsync(token);
 
-                return;
+                return new Result<Guid>(product.Id);
             }
             catch
             {

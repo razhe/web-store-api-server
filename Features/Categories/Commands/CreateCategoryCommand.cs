@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using MediatR;
+using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Categories;
 using web_store_server.Domain.Entities;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Commands
 {
-    public record CreateCategoryCommand(CreateUpdateCategoryDto ProductCategoryDto) : IRequest;
+    public record CreateCategoryCommand(CreateUpdateCategoryDto CategoryDto) : IRequest<Result<int>>;
 
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<int>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _dbContext;
@@ -19,16 +20,16 @@ namespace web_store_server.Features.Categories.Commands
             _dbContext = context;
         }
 
-        public async Task Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                ProductCategory productCategory = _mapper.Map<CreateUpdateCategoryDto, ProductCategory>(request.ProductCategoryDto);
+                ProductCategory productCategory = _mapper.Map<CreateUpdateCategoryDto, ProductCategory>(request.CategoryDto);
 
                 _dbContext.Add(productCategory);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                return;
+                return new Result<int>(productCategory.Id);
             }
             catch
             {

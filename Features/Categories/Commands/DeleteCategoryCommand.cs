@@ -24,6 +24,7 @@ namespace web_store_server.Features.Categories.Commands
                 var productCategory = await _dbContext
                     .ProductCategories
                     .Where(x => x.Id == request.CategoryId)
+                    .Include(x => x.ProductSubcategories)
                     .FirstOrDefaultAsync(cancellationToken);
 
                 if (productCategory is null)
@@ -32,6 +33,8 @@ namespace web_store_server.Features.Categories.Commands
                 }
 
                 _dbContext.Remove(productCategory); // IAuditable - Soft delete Strategy
+                _dbContext.RemoveRange(productCategory.ProductSubcategories); // IAuditable - Soft delete Strategy
+
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<bool>(true);

@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Categories;
-using web_store_server.Domain.Dtos.Products;
 using web_store_server.Persistence.Database;
 
 namespace web_store_server.Features.Categories.Commands
 {
-    public record UpdateCategoryCommand(CreateUpdateCategoryDto ProductCategoryDto, int CategoryId) : 
+    public record UpdateCategoryCommand(CreateUpdateCategoryDto CategoryDto, int CategoryId) : 
         IRequest<Result<CategoryDto>>;
 
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result<CategoryDto>>
@@ -37,7 +35,7 @@ namespace web_store_server.Features.Categories.Commands
                     return new Result<CategoryDto>("No se ha encontrado una categoría con ese identificador.");
                 }
 
-                request.ProductCategoryDto.MapToModel(productCategory);
+                request.CategoryDto.MapToModel(productCategory);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
                 CategoryDto categoryUpdated = _mapper.Map<CategoryDto>(productCategory);
