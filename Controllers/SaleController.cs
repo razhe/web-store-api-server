@@ -65,7 +65,7 @@ namespace web_store_server.Controllers
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<GetSaleDto>>> GetSalesHistory(
+        public async Task<ActionResult<DefaultAPIResponse<IEnumerable<GetSaleDto>>>> GetSalesHistory(
             [FromQuery]SalesHistoryQueryParams queryParams,
             CancellationToken token)
         {
@@ -97,7 +97,7 @@ namespace web_store_server.Controllers
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet("report")]
-        public async Task<ActionResult<IEnumerable<ReportDto>>> GetReport(
+        public async Task<ActionResult<DefaultAPIResponse<IEnumerable<ReportDto>>>> GetReport(
             [FromQuery] ReportQueryParams queryParams,
             CancellationToken token)
         {
