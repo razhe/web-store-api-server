@@ -12,7 +12,39 @@ namespace web_store_server.Domain.Communication
             _problemDetailsFactory = problemDetailsFactory;
         }
 
-        public ActionResult HandleError(HttpContext context, int statusCode, string detail)
+        public ActionResult HandleDefaultResponse(int statusCode, bool status, string message, dynamic data)
+        {
+            var result = new
+            {
+                status,
+                message,
+                data
+            };
+
+            return new ObjectResult(result)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = statusCode,
+            };
+        }
+
+        public ActionResult HandleDefaultResponse(int statusCode, bool status, KeyValuePair<int, string> errors, dynamic data)
+        {
+            var result = new
+            {
+                status,
+                errors,
+                data
+            };
+
+            return new ObjectResult(result)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = statusCode,
+            };
+        }
+
+        public ActionResult HandleProblemDetailsError(HttpContext context, int statusCode, string detail)
         {
             var problemDetails = _problemDetailsFactory.CreateProblemDetails(
                 context,

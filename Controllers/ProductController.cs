@@ -84,7 +84,7 @@ namespace web_store_server.Controllers
                 
             return result.IsSuccess ?
                 Ok(result.Data) :
-                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _errorResultHandler.HandleProblemDetailsError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace web_store_server.Controllers
 
             return result.IsSuccess ?
                 Ok() :
-                _errorResultHandler.HandleError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
+                _errorResultHandler.HandleProblemDetailsError(HttpContext, StatusCodes.Status400BadRequest, result.Message);
         }
     }
 }
