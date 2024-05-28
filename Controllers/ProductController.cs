@@ -59,15 +59,15 @@ namespace web_store_server.Controllers
         /// <summary>
         /// Permite obtener un producto especifico
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="productId"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpGet("{id:Guid}")]
+        [HttpGet("{productId:Guid}")]
         public async Task<ActionResult<DefaultAPIResponse<GetProductDto>>> GetProductById(
-            Guid id,
+            Guid productId,
             CancellationToken token)
         {
-            var result = await _sender.Send(new GetProductByIdQuery(id), token);
+            var result = await _sender.Send(new GetProductByIdQuery(productId), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
@@ -123,17 +123,17 @@ namespace web_store_server.Controllers
         /// <summary>
         /// Permite actualizar un producto
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="productId"></param>
         /// <param name="updateProductDto"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpPut("{id:Guid}")]
+        [HttpPut("{productId:Guid}")]
         public async Task<ActionResult<DefaultAPIResponse<ProductDto>>> UpdateProduct(
-            [FromRoute] Guid id,
+            [FromRoute] Guid productId,
             [FromBody] CreateUpdateProductDto updateProductDto,
             CancellationToken token)
         {
-            var result = await _sender.Send(new UpdateProductCommand(updateProductDto, id), token);
+            var result = await _sender.Send(new UpdateProductCommand(updateProductDto, productId), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
@@ -157,15 +157,15 @@ namespace web_store_server.Controllers
         /// <summary>
         /// Permite eliminar un producto
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="productId"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        [HttpDelete("{id:Guid}")]
+        [HttpDelete("{productId:Guid}")]
         public async Task<ActionResult<DefaultAPIResponse<AnyType>>> DeleteProduct(
-            Guid id,
+            Guid productId,
             CancellationToken token)
         {
-            var result = await _sender.Send(new DeleteProductCommand(id), token);
+            var result = await _sender.Send(new DeleteProductCommand(productId), token);
 
             return result.IsSuccess ?
                 _APIResultHandler.HandleResponse(
