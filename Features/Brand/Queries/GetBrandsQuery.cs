@@ -3,14 +3,15 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using web_store_server.Domain.Communication;
+using web_store_server.Domain.Dtos.Brands;
 using web_store_server.Domain.Dtos.Categories;
 using web_store_server.Persistence.Database;
 
-namespace web_store_server.Features.Categories.Queries
+namespace web_store_server.Features.Brand.Queries
 {
-    public record GetBrandsQuery : IRequest<Result<IEnumerable<CategoryDto>>>;
+    public record GetBrandsQuery : IRequest<Result<IEnumerable<BrandDto>>>;
 
-    public class GetBrandsQueryHandler : IRequestHandler<GetBrandsQuery, Result<IEnumerable<CategoryDto>>>
+    public class GetBrandsQueryHandler : IRequestHandler<GetBrandsQuery, Result<IEnumerable<BrandDto>>>
     {
         private readonly IMapper _mapper;
         private readonly StoreContext _dbContext;
@@ -21,17 +22,17 @@ namespace web_store_server.Features.Categories.Queries
             _dbContext = context;
         }
 
-        public async Task<Result<IEnumerable<CategoryDto>>> Handle(GetBrandsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<BrandDto>>> Handle(GetBrandsQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var response = await _dbContext
-                    .ProductCategories
+                    .ProductBrands
                     .Where(p => !p.IsDeleted)
-                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                    .ProjectTo<BrandDto>(_mapper.ConfigurationProvider)
                     .ToArrayAsync(cancellationToken);
 
-                return new Result<IEnumerable<CategoryDto>>(response);
+                return new Result<IEnumerable<BrandDto>>(response);
             }
             catch
             {

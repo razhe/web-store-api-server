@@ -32,7 +32,7 @@ namespace web_store_server.Controllers
         public async Task<ActionResult<DefaultAPIResponse<IEnumerable<CategoryDto>>>> GetCategoriesList(
             CancellationToken token)
         {
-            var result = await _sender.Send(new GetCategoriesQuery(), token);
+            var result = await _sender.Send(new GetBrandsQuery(), token);
 
             return _APIResultHandler.HandleResponse(
                 StatusCodes.Status200OK,

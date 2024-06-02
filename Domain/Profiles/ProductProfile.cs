@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using web_store_server.Domain.Dtos.Brands;
 using web_store_server.Domain.Dtos.Categories;
 using web_store_server.Domain.Dtos.Products;
 using web_store_server.Domain.Dtos.Subcategories;
@@ -38,6 +39,12 @@ namespace web_store_server.Domain.Profiles
 
             CreateMap<CreateUpdateSubcategoryDto, ProductSubcategory>();
             CreateMap<ProductSubcategory, SubcategoryDto>();
+
+            #endregion
+
+            #region Brands
+
+            CreateMap<ProductBrand, BrandDto>().ReverseMap();
 
             #endregion
         }
