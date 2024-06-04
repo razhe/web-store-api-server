@@ -22,6 +22,7 @@ namespace web_store_server.Controllers
             _APIResultHandler = aPIResultHandler;
         }
 
+        [HttpGet]
         public async Task<ActionResult<DefaultAPIResponse<IEnumerable<ProductDto>>>> GetBrands(
             CancellationToken token)
         {

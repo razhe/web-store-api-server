@@ -27,7 +27,7 @@ namespace web_store_mvc.Features.Products.Commands
             CancellationToken token)
         {
             try
-            {
+                {
                 var product = await _dbContext
                 .Products
                 .Where(x => x.Id == request.ProductId)
