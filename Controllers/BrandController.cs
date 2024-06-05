@@ -23,7 +23,7 @@ namespace web_store_server.Controllers
         }
 
         /// <summary>
-        /// Lista las marcas disponibles
+        /// Lista las marcas disponibles    
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>

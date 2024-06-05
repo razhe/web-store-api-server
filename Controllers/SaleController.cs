@@ -49,7 +49,7 @@ namespace web_store_server.Controllers
                         Data = result.Data 
                     }) :
                 _APIResultHandler.HandleResponse(
-                    StatusCodes.Status200OK,
+                    StatusCodes.Status400BadRequest,
                     new DefaultAPIResponse<Guid>()
                     {
                         IsSuccess = false,

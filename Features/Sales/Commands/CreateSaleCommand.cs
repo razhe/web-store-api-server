@@ -24,11 +24,17 @@ namespace web_store_server.Features.Sales.Commands
 
         public async Task<Result<Guid>> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
+            long totalAmount = 0;
             try
             {
                 var products = await _dbContext.Products
                     .Where(x => request.CreateSaleDto.Select(x => x.ProductId).Contains(x.Id))
                     .ToArrayAsync(cancellationToken);
+
+                foreach (var product in request.CreateSaleDto)
+                {
+                    totalAmount += product.Quantity * products.First(x => x.Id.Equals(product.ProductId)).Price;
+                }
 
                 var customerId = await _dbContext.Customers.Where(x => x.UserId == request.UserId)
                     .Select(x => x.Id)
@@ -44,7 +50,7 @@ namespace web_store_server.Features.Sales.Commands
                     Sale = new Sale()
                     {
                         Id = Guid.NewGuid(),
-                        Total = products.Select(x => x.Price).Sum(),
+                        Total = totalAmount,
                         CreatedAt = DateTimeOffset.Now,
                         ProductSales = new List<ProductSale>()
                     }
