@@ -28,7 +28,7 @@ namespace web_store_server.Domain.Communication
             };
         }
 
-        public ActionResult HandleResponse(int statusCode, dynamic response, KeyValuePair<int, string> errors)
+        public ActionResult HandleResponse(int statusCode, dynamic response, Dictionary<int, string> errors)
         {
             var result = new
             {
