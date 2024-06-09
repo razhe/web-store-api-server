@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 using web_store_server.Domain.Communication;
 using web_store_server.Domain.Dtos.Admin;
 using web_store_server.Domain.Entities;
@@ -31,19 +32,8 @@ namespace web_store_server.Features.Dashboard.Queries
                 dashboard.TotalSales = await TotalSalesLastWeek();
                 dashboard.TotalProfit = await TotalProfitLastWeek();
                 dashboard.TotalProducts = await TotalProducts();
+                dashboard.LastWeekSales = await SalesLastWeek();
 
-                List<WeekSalesDto> salesList = new();
-
-                foreach (KeyValuePair<string, int> item in await SalesLastWeek())
-                {
-                    salesList.Add(new WeekSalesDto()
-                    {
-                        Date = item.Key,
-                        Total = item.Value,
-                    });
-                }
-
-                dashboard.LastWeekSales = salesList;
                 return new Result<DashboardDto>(dashboard);
             }
             catch
@@ -148,9 +138,9 @@ namespace web_store_server.Features.Dashboard.Queries
         /// Retorna las ventas de la ultima semana
         /// </summary>
         /// <returns></returns>
-        private async Task<Dictionary<string, int>> SalesLastWeek() 
+        private async Task<List<WeekSalesDto>> SalesLastWeek() 
         {
-            Dictionary<string, int> result = new ();
+            List<WeekSalesDto> result = new ();
             IQueryable<Sale> saleQuery = _dbContext.Sales;
 
             try
@@ -161,12 +151,12 @@ namespace web_store_server.Features.Dashboard.Queries
 
                     result = await salesTable.GroupBy(x => x.CreatedAt)
                         .OrderBy(group => group.Key)
-                        .Select(group => new
+                        .Select(group => new WeekSalesDto
                         {
-                            date = group.Key.ToString("dd/MM/yyyy"),
-                            total = group.Count()
+                            Date = group.Key.ToString("dd/MM/yyyy"),
+                            Total = group.Count()
                         })
-                        .ToDictionaryAsync(keySelector: x => x.date, elementSelector: x => x.total);
+                        .ToListAsync();
 
                 }
                 return result;
