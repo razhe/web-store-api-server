@@ -93,6 +93,7 @@ namespace web_store_server.Domain.Services.Account
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claims.AddClaim(new Claim("ClientIdentifier", client.Id.ToString()));
             claims.AddClaim(new Claim("Name", user.Customer.FirstName.ToString()));
+            claims.AddClaim(new Claim("Email", user.Email.ToString()));
             claims.AddClaim(new Claim("Role", user.Role.ToString()));
 
             var tokenCredentials = new SigningCredentials(
