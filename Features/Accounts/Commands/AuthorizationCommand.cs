@@ -34,6 +34,7 @@ namespace web_store_server.Features.Accounts.Commands
                 var user = await _dbContext.Users
                 .AsNoTracking()
                 .Where(x => x.Email == request.AuthorizationRequest.Email)
+                .Include(x => x.Customer)
                 .FirstOrDefaultAsync(cancellationToken: token);
 
                 var oAuthClient = await _dbContext.OauthClients

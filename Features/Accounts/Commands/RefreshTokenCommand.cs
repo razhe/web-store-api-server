@@ -47,6 +47,7 @@ namespace web_store_server.Features.Accounts.Commands
 
                 var user = await _dbContext.Users
                     .Where(x => x.Id == Guid.Parse(jwtUserId))
+                    .Include(x => x.Customer)
                     .FirstAsync(token);
 
                 var client = await _dbContext.OauthClients
