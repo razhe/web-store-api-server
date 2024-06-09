@@ -149,11 +149,11 @@ namespace web_store_server.Features.Dashboard.Queries
                 {
                     var salesTable = await ReturnSales(saleQuery, -7);
 
-                    result = await salesTable.GroupBy(x => x.CreatedAt)
+                    result = await salesTable.GroupBy(x => x.CreatedAt.ToString("dd/MM/yyyy"))
                         .OrderBy(group => group.Key)
                         .Select(group => new WeekSalesDto
                         {
-                            Date = group.Key.ToString("dd/MM/yyyy"),
+                            Date = group.Key,
                             Total = group.Count()
                         })
                         .ToListAsync();
